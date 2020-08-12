@@ -7,38 +7,55 @@ client.login('NTAyMTczMjUxNTk4OTQyMjA5.W8dzSQ.nD7IhGcslAXGUr36vXqHnSCJBB0');
 //let inazuma;
 
 var text, onGoingSeries;
-const prefix = _;
+const prefix = '-';
 
 client.on('ready', () => {
 	//inazuma = new Anime("inaz", ["orion", "kokuin"]);
 	text = fs.readFileSync('test.json',{encoding:'utf8'});
 	onGoingSeries = JSON.parse(text);
-	console.log(SearchJSONForKeyWord(onGoingSeries, "orion"));
-
 });
 
 client.on('message', msg => {
-    if (!message.content.startsWith(prefix) || message.author.bot) return;
+    if (!msg.content.startsWith(prefix) || msg.author.bot) return;
 
-	const args = message.content.slice(prefix.length).trim().split(' ');
+	const args = msg.content.slice(prefix.length).trim().split(' ');
 	const command = args.shift().toLowerCase();
 
 	if(args.length == 0)
 	{
-		
+		msg.reply("Nu ai introdus suficiente argumente :(");
 	}
+	else if(command == "progres")
+	{
+		var nume = SearchJSONForKeyWord(onGoingSeries, args);
+		if(nume == null) 
+		{
+			msg.channel.send("Seria nu a fost gasita");
+			return;
+		}
+		
+		const exampleEmbed = new Discord.MessageEmbed()
+		.setColor([150, 0, 255])
+		.setTitle(nume + " #X")
+		.addFields(
+			{ name: 'Progres', value: 'Traducere \nVerificare \nTypesetting \nEncode' },
+		)
+
+		.setThumbnail('https://upload.wikimedia.org/wikipedia/en/f/f5/Inazumaeleven.orionnokokuin.animekeyvisual.jpg')
+		.setTimestamp();
+
+		msg.channel.send(exampleEmbed);
+	}	
 });
 
 
 function SearchJSONForKeyWord(obj, keyword)
 {
-	keyword.toLowerCase();
-	
 	for(var i = 0; i < obj.length; i++)
 	{
 		for(var j = 0; j < obj[i].keyWords.length; j++)
 		{
-			if(keyword === obj[i].keyWords[j])
+			if(keyword.includes(obj[i].keyWords[j]))
 				return obj[i].title;
 		}
 	}
