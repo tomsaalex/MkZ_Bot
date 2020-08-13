@@ -1,22 +1,47 @@
 [
 	{
 		"title": "Inazuma Eleven: Orion no Kokuin",
-		"keyWords": ["inazuma", "eleven", "orion", "kokuin"]
+		"keyWords": ["inazuma", "eleven", "orion", "kokuin"],
+		"image": "https://upload.wikimedia.org/wikipedia/en/f/f5/Inazumaeleven.orionnokokuin.animekeyvisual.jpg",
+		"traducere": 1,
+		"verificare":0,
+		"typesetting":1,
+		"encode":0
 	},
 	{
 		"title": "Pokemon: Indigo League",
-		"keyWords": ["pokemon", "indigo", "league"]
+		"keyWords": ["pokemon", "indigo", "league"],
+		"image": "https://resizing.flixster.com/9SDCd_IYmCz4thSTif7UmveVZQk=/fit-in/1152x864/v1.dDs0NDA2MTY7ajsxODUwMDsxMjAwOzEzMDQ7MTk1Ng",
+		"traducere": 1,
+		"verificare":1,
+		"typesetting":1,
+		"encode":0
 	},
 	{
 		"title": "Bakuten Shoot Beyblade",
-		"keyWords": ["beyblade", "bakuten", "shoot"]
+		"keyWords": ["beyblade", "bakuten", "shoot"],
+		"image": "https://vignette.wikia.nocookie.net/beyblade/images/5/50/120005455.jpg/revision/latest/scale-to-width-down/340?cb=20140117043720",
+		"traducere": 1,
+		"verificare":0,
+		"typesetting":0,
+		"encode":0
 	},
 	{
 		"title": "Haikyuu!! To The Top",
-		"keyWords": ["haikyuu", "top"]
+		"keyWords": ["haikyuu", "top"],
+		"image": "https://cdn.myanimelist.net/images/anime/1813/105367.jpg",
+		"traducere": 1,
+		"verificare":0,
+		"typesetting":0,
+		"encode":0
 	},
 	{
 		"title": "Tower of God",
-		"keyWords": ["tower", "god"]
+		"keyWords": ["tower", "god"],
+		"image":" https://cdn.myanimelist.net/images/anime/1702/106229.jpg",
+		"traducere": 1,
+		"verificare":0,
+		"typesetting":1,
+		"encode":1
 	}
 ]

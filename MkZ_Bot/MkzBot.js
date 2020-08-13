@@ -26,21 +26,23 @@ client.on('message', msg => {
 	}
 	else if(command == "progres")
 	{
-		var nume = SearchJSONForKeyWord(onGoingSeries, args);
-		if(nume == null) 
+		let series = SearchJSONForKeyWord(onGoingSeries, args);
+		if(series == null) 
 		{
 			msg.channel.send("Seria nu a fost gasita");
 			return;
 		}
 		
+
 		const exampleEmbed = new Discord.MessageEmbed()
 		.setColor([150, 0, 255])
-		.setTitle(nume + " #X")
+		.setTitle(series.title + " #X")
 		.addFields(
-			{ name: 'Progres', value: 'Traducere \nVerificare \nTypesetting \nEncode' },
+			//{ name: 'Progres', value: "Traducere "  + boolToEmote(series.traducere) + '\nVerificare ' + boolToEmote(series.verificare) + '\nTypesetting ' + boolToEmote(series.typesetting) + '\nEncode ' + boolToEmote(series.encode)},
+			{ name: 'Progres', value: boolToStrikeThrough(series.traducere, "Traducere") + ' \n' + boolToStrikeThrough(series.verificare, "Verificare") + ' \n' + boolToStrikeThrough(series.typesetting, "Typesetting") + ' \n' + boolToStrikeThrough(series.encode, "Encode")},
 		)
 
-		.setThumbnail('https://upload.wikimedia.org/wikipedia/en/f/f5/Inazumaeleven.orionnokokuin.animekeyvisual.jpg')
+		.setThumbnail(series.image)
 		.setTimestamp();
 
 		msg.channel.send(exampleEmbed);
@@ -48,14 +50,42 @@ client.on('message', msg => {
 });
 
 
+function boolToEmote(value)
+{
+	if(value == 1)
+	{
+		return ":white_check_mark:";
+	}
+		return ":x:";
+}
+
+function boolToStrikeThrough(value, text)
+{
+	if(value == 1)
+	{
+		return '~~' + text + '~~';
+	}
+	return text;
+}
+
 function SearchJSONForKeyWord(obj, keyword)
 {
+	let series = new Anime();
+
 	for(var i = 0; i < obj.length; i++)
 	{
 		for(var j = 0; j < obj[i].keyWords.length; j++)
 		{
 			if(keyword.includes(obj[i].keyWords[j]))
-				return obj[i].title;
+				{
+					series.title = obj[i].title;
+					series.image = obj[i].image;
+					series.traducere = obj[i].traducere;
+					series.verificare = obj[i].verificare;
+					series.typesetting = obj[i].typesetting;
+					series.encode = obj[i].encode;
+					return series;
+				}
 		}
 	}
 
@@ -64,9 +94,13 @@ function SearchJSONForKeyWord(obj, keyword)
 
 class Anime{
 	
-	constructor(title, keyWords)
+	constructor(title, image, traducere, verificare, typesetting, encode)
 	{
 		this.title = title;
-		this.keyWords = keyWords;
+		this.image = image;
+		this.traducere = traducere;
+		this.verificare = verificare;
+		this.typesetting = typesetting;
+		this.encode = encode;
 	}
 }
