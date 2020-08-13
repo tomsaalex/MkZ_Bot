@@ -1,16 +1,15 @@
 const Discord = require('discord.js');
 const client = new Discord.Client();
 const fs = require('fs'); 
+const token = JSON.parse(fs.readFileSync('token.json')).token;
 
-client.login('NTAyMTczMjUxNTk4OTQyMjA5.W8dzSQ.nD7IhGcslAXGUr36vXqHnSCJBB0');
+client.login(token);
 
-//let inazuma;
 
 var text, onGoingSeries;
 const prefix = '-';
 
 client.on('ready', () => {
-	//inazuma = new Anime("inaz", ["orion", "kokuin"]);
 	text = fs.readFileSync('test.json',{encoding:'utf8'});
 	onGoingSeries = JSON.parse(text);
 });
