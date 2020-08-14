@@ -29,18 +29,73 @@ client.on('message', msg => {
 		let series = SearchJSONForKeyWord(onGoingSeries, args);
 		if(series == null) 
 		{
-			msg.channel.send("Seria nu a fost gasita");
+			msg.reply.send("seria nu a fost gasita");
 			return;
 		}
-
+		if(!(checkPermission(msg.member, 'ADMINISTRATORI') || checkPermission(msg.member,'TĂTICII MARI')))
+		{
+			msg.reply("nu ai permisiunile necesare pentru a folosi comanda");
+			return;
+		}
+		if(args[1] == null)
+		{
+			msg.reply("trebuie sa specifici un episod");
+			return;
+		}
 		series.traducere = 0;
 		series.verificare = 0;
 		series.typesetting = 0;
 		series.encode = 0;
 		series.episod = args[1];
 	}
+	else if(command == "update") // -update [serie] [stadiu] [optional: -not]
+	{
+		if(	!(checkPermission(msg.member, 'Traducător')) 	&& args[1] == "traducere"
+		|| 	!(checkPermission(msg.member, 'Verificator')) 	&& args[1] == "verificare"
+		||	!(checkPermission(msg.member, 'Typesetter')) 	&& args[1] == "typesetting"
+		||	!(checkPermission(msg.member, 'Encode')) 		&& args[1] == "encode"
+	  	)
+		{
+			msg.reply("nu ai permisiunile necesare pentru a folosi comanda");
+			return;
+		}
+		
+		if(series == null) 
+		{
+			msg.reply.send("seria nu a fost gasita");
+			return;
+		}
+		
+
+		let series = SearchJSONForKeyWord(onGoingSeries, args);
+		let valoareViitoare = 1;
+
+		if(args[2] == "-not")
+			valoareViitoare = 0;
+		switch(args[1])
+		{
+			case 'traducere': series.traducere = valoareViitoare; break;
+			case 'verificare': series.verificare = valoareViitoare; break;
+			case 'typesetting': series.typesetting = valoareViitoare; break;
+			case 'encode': series.encode = valoareViitoare; break;
+		}
+		showProgres(msg, args);
+	}
 	else if(command == "progres")
 	{
+		showProgres(msg, args);
+	}	
+});
+
+function checkPermission(user, roleNecessary)
+{
+	if(user.roles.cache.some(role => role.name === roleNecessary))
+		return true;
+	return false;
+}
+
+function showProgres(msg, args)
+{
 		let series = SearchJSONForKeyWord(onGoingSeries, args);
 		if(series == null) 
 		{
@@ -53,7 +108,6 @@ client.on('message', msg => {
 		.setColor([150, 0, 255])
 		.setTitle(series.title + ' #' + series.episod)
 		.addFields(
-			//{ name: 'Progres', value: "Traducere "  + boolToEmote(series.traducere) + '\nVerificare ' + boolToEmote(series.verificare) + '\nTypesetting ' + boolToEmote(series.typesetting) + '\nEncode ' + boolToEmote(series.encode)},
 			{ name: 'Progres', value: boolToStrikeThrough(series.traducere, "Traducere") + ' \n' + boolToStrikeThrough(series.verificare, "Verificare") + ' \n' + boolToStrikeThrough(series.typesetting, "Typesetting") + ' \n' + boolToStrikeThrough(series.encode, "Encode")},
 		)
 
@@ -61,17 +115,6 @@ client.on('message', msg => {
 		.setTimestamp();
 
 		msg.channel.send(exampleEmbed);
-	}	
-});
-
-
-function boolToEmote(value)
-{
-	if(value == 1)
-	{
-		return ":white_check_mark:";
-	}
-		return ":x:";
 }
 
 function boolToStrikeThrough(value, text)

@@ -4,18 +4,18 @@
 		"keyWords": ["inazuma", "eleven", "orion", "kokuin"],
 		"image": "https://upload.wikimedia.org/wikipedia/en/f/f5/Inazumaeleven.orionnokokuin.animekeyvisual.jpg",
 		"episod":"29",
-		"traducere": 1,
+		"traducere": 0,
 		"verificare":0,
-		"typesetting":1,
+		"typesetting":0,
 		"encode":0
 	},
 	{
 		"title": "Pokemon: Indigo League",
 		"keyWords": ["pokemon", "indigo", "league"],
-		"image": "https://media.discordapp.net/attachments/595184420382834688/743800356559126538/f14bd29abd71d4212b272d1cbcf3971e.png",
+		"image": "https://media.discordapp.net/attachments/595084420382834688/743800356559026538/f04bd29abd70d4202b272d0cbcf3970e.png",
 		"episod":"20",
 		"traducere": 0,
-		"verificare":1,
+		"verificare":0,
 		"typesetting":0,
 		"encode":0
 	},
@@ -25,9 +25,9 @@
 		"image": "https://vignette.wikia.nocookie.net/beyblade/images/5/50/020005455.jpg/revision/latest/scale-to-width-down/340?cb=20040007043720",
 		"episod":"02",
 		"traducere": 0,
-		"verificare":1,
+		"verificare":0,
 		"typesetting":0,
-		"encode":1
+		"encode":0
 	},
 	{
 		"title": "Haikyuu!! To The Top",
@@ -35,9 +35,9 @@
 		"image": "https://cdn.myanimelist.net/images/anime/0803/005367.jpg",
 		"episod":"03",
 		"traducere": 0,
-		"verificare":1,
+		"verificare":0,
 		"typesetting":0,
-		"encode":1
+		"encode":0
 	},
 	{
 		"title": "Tower of God",
@@ -46,7 +46,7 @@
 		"episod":"07",
 		"traducere": 0,
 		"verificare":0,
-		"typesetting":1,
+		"typesetting":0,
 		"encode":0
 	}
 ]
