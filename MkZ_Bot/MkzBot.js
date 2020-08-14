@@ -24,6 +24,21 @@ client.on('message', msg => {
 	{
 		msg.reply("Nu ai introdus suficiente argumente :(");
 	}
+	else if(command == "start")
+	{
+		let series = SearchJSONForKeyWord(onGoingSeries, args);
+		if(series == null) 
+		{
+			msg.channel.send("Seria nu a fost gasita");
+			return;
+		}
+
+		series.traducere = 0;
+		series.verificare = 0;
+		series.typesetting = 0;
+		series.encode = 0;
+		series.episod = args[1];
+	}
 	else if(command == "progres")
 	{
 		let series = SearchJSONForKeyWord(onGoingSeries, args);
@@ -36,7 +51,7 @@ client.on('message', msg => {
 
 		const exampleEmbed = new Discord.MessageEmbed()
 		.setColor([150, 0, 255])
-		.setTitle(series.title + " #X")
+		.setTitle(series.title + ' #' + series.episod)
 		.addFields(
 			//{ name: 'Progres', value: "Traducere "  + boolToEmote(series.traducere) + '\nVerificare ' + boolToEmote(series.verificare) + '\nTypesetting ' + boolToEmote(series.typesetting) + '\nEncode ' + boolToEmote(series.encode)},
 			{ name: 'Progres', value: boolToStrikeThrough(series.traducere, "Traducere") + ' \n' + boolToStrikeThrough(series.verificare, "Verificare") + ' \n' + boolToStrikeThrough(series.typesetting, "Typesetting") + ' \n' + boolToStrikeThrough(series.encode, "Encode")},
@@ -78,13 +93,16 @@ function SearchJSONForKeyWord(obj, keyword)
 		{
 			if(keyword.includes(obj[i].keyWords[j]))
 				{
-					series.title = obj[i].title;
+					/*series.title = obj[i].title;
 					series.image = obj[i].image;
 					series.traducere = obj[i].traducere;
 					series.verificare = obj[i].verificare;
 					series.typesetting = obj[i].typesetting;
 					series.encode = obj[i].encode;
+					series.episod = obj[i].episod;
 					return series;
+					*/
+					return obj[i];
 				}
 		}
 	}
@@ -94,10 +112,12 @@ function SearchJSONForKeyWord(obj, keyword)
 
 class Anime{
 	
-	constructor(title, image, traducere, verificare, typesetting, encode)
+	constructor(title, keyWords, image, traducere, verificare, typesetting, encode, episod)
 	{
 		this.title = title;
+		this.keyWords = keyWords;
 		this.image = image;
+		this.episod = episod;
 		this.traducere = traducere;
 		this.verificare = verificare;
 		this.typesetting = typesetting;
