@@ -10,7 +10,7 @@ var text, onGoingSeries;
 const prefix = '-';
 
 client.on('ready', () => {
-	text = fs.readFileSync('test.json',{encoding:'utf8'});
+	text = fs.readFileSync('anime.json',{encoding:'utf8'});
 	onGoingSeries = JSON.parse(text);
 });
 
