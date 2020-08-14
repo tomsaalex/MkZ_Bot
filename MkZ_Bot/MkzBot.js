@@ -20,11 +20,7 @@ client.on('message', msg => {
 	const args = msg.content.slice(prefix.length).trim().split(' ');
 	const command = args.shift().toLowerCase();
 
-	if(args.length == 0)
-	{
-		msg.reply("Nu ai introdus suficiente argumente :(");
-	}
-	else if(command == "start")
+	if(command == "start")
 	{
 		let series = SearchJSONForKeyWord(onGoingSeries, args);
 		if(series == null) 
@@ -32,7 +28,7 @@ client.on('message', msg => {
 			msg.reply.send("seria nu a fost gasita");
 			return;
 		}
-		if(!(checkPermission(msg.member, 'ADMINISTRATORI') || checkPermission(msg.member,'TĂTICII MARI')))
+		if(!(checkPermission(msg.member, 'Administratori') || checkPermission(msg.member,'Tăticii mari')))
 		{
 			msg.reply("nu ai permisiunile necesare pentru a folosi comanda");
 			return;
@@ -47,19 +43,21 @@ client.on('message', msg => {
 		series.typesetting = 0;
 		series.encode = 0;
 		series.episod = args[1];
+		fs.WriteFileSync('test.json', onGoingSeries);
 	}
 	else if(command == "update") // -update [serie] [stadiu] [optional: -not]
 	{
 		if(	!(checkPermission(msg.member, 'Traducător')) 	&& args[1] == "traducere"
 		|| 	!(checkPermission(msg.member, 'Verificator')) 	&& args[1] == "verificare"
 		||	!(checkPermission(msg.member, 'Typesetter')) 	&& args[1] == "typesetting"
-		||	!(checkPermission(msg.member, 'Encode')) 		&& args[1] == "encode"
+		||	!(checkPermission(msg.member, 'Encoder')) 		&& args[1] == "encode"
 	  	)
 		{
 			msg.reply("nu ai permisiunile necesare pentru a folosi comanda");
 			return;
 		}
-		
+		let series = SearchJSONForKeyWord(onGoingSeries, args);
+
 		if(series == null) 
 		{
 			msg.reply.send("seria nu a fost gasita");
@@ -67,7 +65,7 @@ client.on('message', msg => {
 		}
 		
 
-		let series = SearchJSONForKeyWord(onGoingSeries, args);
+		
 		let valoareViitoare = 1;
 
 		if(args[2] == "-not")
@@ -80,6 +78,7 @@ client.on('message', msg => {
 			case 'encode': series.encode = valoareViitoare; break;
 		}
 		showProgres(msg, args);
+		fs.writeFileSync('test.json', JSON.stringify(onGoingSeries));
 	}
 	else if(command == "progres")
 	{
