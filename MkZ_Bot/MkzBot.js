@@ -2,14 +2,27 @@ const Discord = require('discord.js');
 const client = new Discord.Client();
 const fs = require('fs'); 
 const token = JSON.parse(fs.readFileSync('token.json')).token;
+const Avatar = 'http://manga-kids.com/wp-content/uploads/2020/08/Hereisararerobotpepe_d7d99eaf4edf4b0adae514bcc94ce151.png';
+
+/*
+const mainServerID = "313373031022198786";
+const mainChannelID = "313377181768089611";
+*/
+
+
+const mainServerID = "595184419950559233";
+const mainChannelID = "595184420382834688";
+
+var mainChannel;
 
 client.login(token);
-
 
 var text, onGoingSeries;
 const prefix = '-';
 
 client.on('ready', () => {
+	mainChannel = client.guilds.cache.get(mainServerID).channels.resolve(mainChannelID);
+	client.user.setAvatar(Avatar);
 	text = fs.readFileSync('anime.json',{encoding:'utf8'});
 	onGoingSeries = JSON.parse(text);
 });
@@ -63,9 +76,7 @@ client.on('message', msg => {
 			msg.reply.send("seria nu a fost gasita");
 			return;
 		}
-		
-
-		
+	
 		let valoareViitoare = 1;
 
 		if(args[2] == "-not")
@@ -77,12 +88,12 @@ client.on('message', msg => {
 			case 'typesetting': series.typesetting = valoareViitoare; break;
 			case 'encode': series.encode = valoareViitoare; break;
 		}
-		showProgres(msg, args);
+		showProgres(msg, args, mainChannel);
 		fs.writeFileSync('test.json', JSON.stringify(onGoingSeries));
 	}
 	else if(command == "progres")
 	{
-		showProgres(msg, args);
+		showProgres(msg, args, message.channel);
 	}	
 });
 
@@ -93,7 +104,7 @@ function checkPermission(user, roleNecessary)
 	return false;
 }
 
-function showProgres(msg, args)
+function showProgres(msg, args, chan)
 {
 		let series = SearchJSONForKeyWord(onGoingSeries, args);
 		if(series == null) 
@@ -113,7 +124,7 @@ function showProgres(msg, args)
 		.setThumbnail(series.image)
 		.setTimestamp();
 
-		msg.channel.send(exampleEmbed);
+		chan.send(exampleEmbed);
 }
 
 function boolToStrikeThrough(value, text)
