@@ -28,6 +28,7 @@ client.on('ready', () => {
 });
 
 client.on('message', msg => {
+    msg.content = msg.content.toLowerCase();
     if (!msg.content.startsWith(prefix) || msg.author.bot) return;
 
 	const args = msg.content.slice(prefix.length).trim().split(' ');
@@ -38,7 +39,7 @@ client.on('message', msg => {
 		let series = SearchJSONForKeyWord(onGoingSeries, args);
 		if(series == null) 
 		{
-			msg.reply.send("seria nu a fost gasita");
+			msg.reply("seria nu a fost gasita");
 			return;
 		}
 		if(!(checkPermission(msg.member, 'Administratori') || checkPermission(msg.member,'Tăticii mari')))
@@ -56,7 +57,7 @@ client.on('message', msg => {
 		series.typesetting = 0;
 		series.encode = 0;
 		series.episod = args[1];
-		fs.WriteFileSync('anime.json', onGoingSeries);
+		fs.writeFileSync('anime.json', onGoingSeries);
 	}
 	else if(command == "update") // -update [serie] [stadiu] [optional: -not]
 	{
@@ -73,7 +74,7 @@ client.on('message', msg => {
 
 		if(series == null) 
 		{
-			msg.reply.send("seria nu a fost gasita");
+			msg.reply("seria nu a fost gasita");
 			return;
 		}
 	
@@ -93,7 +94,7 @@ client.on('message', msg => {
 	}
 	else if(command == "progres")
 	{
-		showProgres(msg, args, message.channel);
+		showProgres(msg, args, msg.channel);
 	}	
 });
 
