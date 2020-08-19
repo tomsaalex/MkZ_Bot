@@ -110,7 +110,7 @@ function showProgres(msg, args, chan)
 		let series = SearchJSONForKeyWord(onGoingSeries, args);
 		if(series == null) 
 		{
-			msg.channel.send("Seria nu a fost gasita");
+			msg.reply("Seria nu a fost gasita");
 			return;
 		}
 		
