@@ -56,7 +56,7 @@ client.on('message', msg => {
 		series.typesetting = 0;
 		series.encode = 0;
 		series.episod = args[1];
-		fs.WriteFileSync('test.json', onGoingSeries);
+		fs.WriteFileSync('anime.json', onGoingSeries);
 	}
 	else if(command == "update") // -update [serie] [stadiu] [optional: -not]
 	{
@@ -89,7 +89,7 @@ client.on('message', msg => {
 			case 'encode': series.encode = valoareViitoare; break;
 		}
 		showProgres(msg, args, mainChannel);
-		fs.writeFileSync('test.json', JSON.stringify(onGoingSeries));
+		fs.writeFileSync('anime.json', JSON.stringify(onGoingSeries));
 	}
 	else if(command == "progres")
 	{
