@@ -49,7 +49,7 @@ client.on('message', msg => {
 		}
 		if(args[1] == null)
 		{
-			msg.reply("trebuie sa specifici un episod");
+			msg.reply("trebuie să specifici un episod");
 			return;
 		}
 		series.traducere = 0;
@@ -70,11 +70,25 @@ client.on('message', msg => {
 			msg.reply("nu ai permisiunile necesare pentru a folosi comanda");
 			return;
 		}
-		let series = SearchJSONForKeyWord(onGoingSeries, args);
+
+		if(args[1] == null)
+			{
+				msg.reply("nu ai specificat un rol");
+				return;
+			}
+		if(args[1] != "traducere"
+		&& args[1] != "verificare"
+		&& args[1] != "typesetting"
+		&& args[1] != "encode")
+			{
+				msg.reply("rolul specificat nu a fost găsit");
+				return;
+			}
+		let series = SearchJSONForKeyWord(onGoingSeries, args[0]);// args[0] in loc de args NETESTAT
 
 		if(series == null) 
 		{
-			msg.reply("seria nu a fost gasita");
+			msg.reply("seria nu a fost gasită");
 			return;
 		}
 	
@@ -82,6 +96,8 @@ client.on('message', msg => {
 
 		if(args[2] == "-not")
 			valoareViitoare = 0;
+		else if(args[2] != null) //NETESTAT
+			msg.reply("Argumentul \„" + args[2] + "\” nu este recunoscut");
 		switch(args[1])
 		{
 			case 'traducere': series.traducere = valoareViitoare; break;
@@ -147,15 +163,6 @@ function SearchJSONForKeyWord(obj, keyword)
 		{
 			if(keyword.includes(obj[i].keyWords[j]))
 				{
-					/*series.title = obj[i].title;
-					series.image = obj[i].image;
-					series.traducere = obj[i].traducere;
-					series.verificare = obj[i].verificare;
-					series.typesetting = obj[i].typesetting;
-					series.encode = obj[i].encode;
-					series.episod = obj[i].episod;
-					return series;
-					*/
 					return obj[i];
 				}
 		}
