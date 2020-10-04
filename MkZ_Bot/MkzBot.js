@@ -22,13 +22,14 @@ const prefix = '-';
 
 client.on('ready', () => {
 	mainChannel = client.guilds.cache.get(mainServerID).channels.resolve(mainChannelID);
-	client.user.setAvatar(Avatar);
-	text = fs.readFileSync('anime.json',{encoding:'utf8'});
-	onGoingSeries = JSON.parse(text);
+	//client.user.setAvatar(Avatar);
+	refreshJSON();
 });
 
 client.on('message', msg => {
-    msg.content = msg.content.toLowerCase();
+    if(!msg.content.includes("add"))
+    	msg.content = msg.content.toLowerCase();
+    
     if (!msg.content.startsWith(prefix) || msg.author.bot) return;
 
 	const args = msg.content.slice(prefix.length).trim().split(' ');
@@ -111,8 +112,64 @@ client.on('message', msg => {
 	else if(command == "progres")
 	{
 		showProgres(msg, args, msg.channel);
+	}
+	else if(command == "add")
+	{
+		if(	!(checkPermission(msg.member, 'Tăticii mari') || checkPermission(msg.member, 'Administrator🌟')))
+		{
+			msg.reply("nu ai permisiunile necesare pentru a folosi comanda");
+			return;
+		}
+		let anime = new Anime();
+		let keyWords = new Array();
+		let i = 2;
+		while(args[i] != null)
+		{
+			keyWords.push(args[i++]);
+		}
+
+		anime.title = args[0];
+		anime.image = args[1];
+		anime.episod = "01";
+		anime.keyWords = keyWords;
+		anime.traducere = 0;
+		anime.verificare = 0;
+		anime.encoding = 0;
+		anime.typesetting = 0;
+		onGoingSeries.push(anime);
+		fs.writeFileSync('anime.json', JSON.stringify(onGoingSeries));
+		refreshJSON();
+		
+		msg.reply("seria " + anime.title + " a fost adăugată");
 	}	
+	else if(command == "drop")
+	{
+		
+		if(	!(checkPermission(msg.member, 'Tăticii mari') || checkPermission(msg.member, 'Administrator🌟')))
+		{
+			msg.reply("nu ai permisiunile necesare pentru a folosi comanda");
+			return;
+		}
+
+		let title = args[0];
+
+		for(let i = 0; i < onGoingSeries.length; i++)
+			if(onGoingSeries[i].title === title)
+				{
+					delete onGoingSeries[i];
+					onGoingSeries.splice(-1, 1);
+				}
+		fs.writeFileSync('anime.json', JSON.stringify(onGoingSeries));
+		refreshJSON();
+		msg.reply("seria " + title + " a fost înlăturată");
+	}
 });
+
+function refreshJSON()
+{
+	text = fs.readFileSync('anime.json',{encoding:'utf8'});
+	onGoingSeries = JSON.parse(text);
+}
 
 function checkPermission(user, roleNecessary)
 {
