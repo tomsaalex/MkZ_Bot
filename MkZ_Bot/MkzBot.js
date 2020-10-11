@@ -29,9 +29,8 @@ client.on('ready', () => {
 });
 
 client.on('message', msg => {
-    if(!msg.content.includes("add"))
+    if(!(msg.content.includes("add") || msg.content.includes("edit")))
     	msg.content = msg.content.toLowerCase();
-    
     if (!msg.content.startsWith(prefix) || msg.author.bot) return;
 
 	const args = msg.content.slice(prefix.length).trim().split(' ');
@@ -42,17 +41,17 @@ client.on('message', msg => {
 		let series = SearchJSONForKeyWord(onGoingSeries, args);
 		if(series == null) 
 		{
-			msg.reply("seria nu a fost gasita");
+			msg.reply(" seria nu a fost gasita");
 			return;
 		}
 		if(!(checkPermission(msg.member, 'Administratori') || checkPermission(msg.member,'Tăticii mari')))
 		{
-			msg.reply("nu ai permisiunile necesare pentru a folosi comanda");
+			msg.reply(" nu ai permisiunile necesare pentru a folosi comanda");
 			return;
 		}
 		if(args[1] == null)
 		{
-			msg.reply("trebuie să specifici un episod");
+			msg.reply(" trebuie să specifici un episod");
 			return;
 		}
 		series.traducere = 0;
@@ -70,13 +69,13 @@ client.on('message', msg => {
 		||	!(checkPermission(msg.member, 'Encoder')) 		&& args[1] == "encode"
 	  	)
 		{
-			msg.reply("nu ai permisiunile necesare pentru a folosi comanda");
+			msg.reply(" nu ai permisiunile necesare pentru a folosi comanda");
 			return;
 		}
 
 		if(args[1] == null)
 			{
-				msg.reply("nu ai specificat un rol");
+				msg.reply(" nu ai specificat un rol");
 				return;
 			}
 		if(args[1] != "traducere"
@@ -84,14 +83,14 @@ client.on('message', msg => {
 		&& args[1] != "typesetting"
 		&& args[1] != "encode")
 			{
-				msg.reply("rolul specificat nu a fost găsit");
+				msg.reply(" rolul specificat nu a fost găsit");
 				return;
 			}
 		let series = SearchJSONForKeyWord(onGoingSeries, args[0]);// args[0] in loc de args NETESTAT
 
 		if(series == null) 
 		{
-			msg.reply("seria nu a fost gasită");
+			msg.reply(" seria nu a fost gasită");
 			return;
 		}
 	
@@ -100,7 +99,7 @@ client.on('message', msg => {
 		if(args[2] == "-not")
 			valoareViitoare = 0;
 		else if(args[2] != null) //NETESTAT
-			msg.reply("Argumentul \„" + args[2] + "\” nu este recunoscut");
+			msg.reply(" argumentul \„" + args[2] + "\” nu este recunoscut");
 		switch(args[1])
 		{
 			case 'traducere': series.traducere = valoareViitoare; break;
@@ -113,13 +112,14 @@ client.on('message', msg => {
 	}
 	else if(command == "progres")
 	{
+
 		showProgres(msg, args, msg.channel);
 	}
 	else if(command == "add")
 	{
 		if(	!(checkPermission(msg.member, 'Tăticii mari') || checkPermission(msg.member, 'Administrator🌟')))
 		{
-			msg.reply("nu ai permisiunile necesare pentru a folosi comanda");
+			msg.reply(" nu ai permisiunile necesare pentru a folosi comanda");
 			return;
 		}
 		let anime = new Anime();
@@ -142,28 +142,75 @@ client.on('message', msg => {
 		fs.writeFileSync('anime.json', JSON.stringify(onGoingSeries));
 		refreshJSON();
 		
-		msg.reply("seria " + anime.title + " a fost adăugată");
+		msg.reply(" seria " + anime.title + " a fost adăugată");
 	}	
 	else if(command == "drop")
 	{
 		
 		if(	!(checkPermission(msg.member, 'Tăticii mari') || checkPermission(msg.member, 'Administrator🌟')))
 		{
-			msg.reply("nu ai permisiunile necesare pentru a folosi comanda");
+			msg.reply(" nu ai permisiunile necesare pentru a folosi comanda");
 			return;
 		}
 
-		let title = args[0];
-
+		let series = SearchJSONForKeyWord(onGoingSeries, args[0]);
+		if(series == null)
+		{
+			msg.reply(" seria " + args[0] + " nu a fost găsită");
+			return;
+		}
 		for(let i = 0; i < onGoingSeries.length; i++)
-			if(onGoingSeries[i].title === title)
+			if(onGoingSeries[i].title === series.title)
 				{
 					delete onGoingSeries[i];
+					for(let j = i; j < onGoingSeries.length - 1; j++)
+						onGoingSeries[j] = onGoingSeries[j + 1];
 					onGoingSeries.splice(-1, 1);
+					break;
 				}
+
 		fs.writeFileSync('anime.json', JSON.stringify(onGoingSeries));
 		refreshJSON();
-		msg.reply("seria " + title + " a fost înlăturată");
+		msg.reply(" seria " + series.title + " a fost înlăturată");
+		
+	}
+	else if(command == "edit")
+	{
+		if(	!(checkPermission(msg.member, 'Tăticii mari') || checkPermission(msg.member, 'Administrator🌟')))
+		{
+			msg.reply(" nu ai permisiunile necesare pentru a folosi comanda");
+			return;
+		}
+
+		let series = SearchJSONForKeyWord(onGoingSeries, args[0]);
+		let propertyToChange = args[1];
+		let newPropertyValue;
+		if(propertyToChange === "title")
+			newPropertyValue = replaceTextInString(args[2]);
+		else
+			newPropertyValue = args[2];
+
+		series[propertyToChange] = newPropertyValue;
+				
+		fs.writeFileSync('anime.json', JSON.stringify(onGoingSeries));
+		refreshJSON();
+
+		msg.reply("seria " + series.title + " a fost editată");			
+	}
+	else if(command == "help")
+	{
+		const helpEmbed = new Discord.MessageEmbed()
+		.setColor([0, 0, 255])
+		.setTitle("Comenzile disponibile")
+		.addFields(
+			
+				{name: "Comenzile disponibile utilizatorilor", value: "-progres [nume serie] (Afișează starea episodului curent din seria dată)"},
+				{name: "Comenzile disponibile membrilor echipei", value: "-update [nume serie] [etapa producției] [(opțional) \"-not\"] (actualizează starea episodului curent din seria dată)"},
+				{name: "Comenzile disponibile administratorilor", value: "-start [nume serie] [număr / nume episod] (începe producția unui episod nou)\n-add [nume serie] [URL pentru thumbnail-ul seriei] [lista de cuvinte cheie a seriei] (adaugă o serie nouă pe baza parametrilor)\n-drop [nume serie] (înlatură o serie din lista bot-ului)\n-edit [nume serie] [proprietatea care trebuie editată] [noua valoare a proprietății] (editează una dintre proprietățile unei serii)"}
+		)
+		.setTimestamp();
+
+		msg.channel.send(helpEmbed);
 	}
 });
 
@@ -185,7 +232,7 @@ function showProgres(msg, args, chan)
 		let series = SearchJSONForKeyWord(onGoingSeries, args);
 		if(series == null) 
 		{
-			msg.reply("Seria nu a fost gasita");
+			msg.reply(" seria nu a fost gasita");
 			return;
 		}
 		
@@ -215,7 +262,6 @@ function boolToStrikeThrough(value, text)
 function SearchJSONForKeyWord(obj, keyword)
 {
 	let series = new Anime();
-
 	for(var i = 0; i < obj.length; i++)
 	{
 		for(var j = 0; j < obj[i].keyWords.length; j++)
@@ -230,7 +276,22 @@ function SearchJSONForKeyWord(obj, keyword)
 	return null;
 }
 
-
+function replaceTextInString(str)
+{
+	for(let i = 0; i < str.length - 2; i++)
+	{
+		arr = Array.from(str);
+		if(arr[i] === arr[i + 1] && arr[i + 1] === arr[i + 2] && arr[i + 2] === "-")
+		{
+			arr[i] = " ";
+			for(let j = i + 3; j < str.length; j++)
+				arr[j - 2] = arr[j];
+			str = arr.join("");
+			str = str.substr(0, str.length - 2);
+		}
+	}
+	return str;
+}
 
 class Anime{
 	
