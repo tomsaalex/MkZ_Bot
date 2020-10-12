@@ -11,7 +11,7 @@ const mainServerID = "313373031022198786";
 const mainChannelID = "313377181768089611";
 */
 
-
+//ID-ul serverului si al canalului pentru actualizari
 const mainServerID = "595184419950559233";
 const mainChannelID = "595184420382834688";
 
@@ -205,8 +205,8 @@ client.on('message', msg => {
 		.addFields(
 			
 				{name: "Comenzile disponibile utilizatorilor", value: "-progres [nume serie] (Afișează starea episodului curent din seria dată)"},
-				{name: "Comenzile disponibile membrilor echipei", value: "-update [nume serie] [etapa producției] [(opțional) \"-not\"] (actualizează starea episodului curent din seria dată)"},
-				{name: "Comenzile disponibile administratorilor", value: "-start [nume serie] [număr / nume episod] (începe producția unui episod nou)\n-add [nume serie] [URL pentru thumbnail-ul seriei] [lista de cuvinte cheie a seriei] (adaugă o serie nouă pe baza parametrilor)\n-drop [nume serie] (înlatură o serie din lista bot-ului)\n-edit [nume serie] [proprietatea care trebuie editată] [noua valoare a proprietății] (editează una dintre proprietățile unei serii)"}
+				{name: "Comenzile disponibile membrilor echipei", value: "-update [nume serie] [etapa procesului de traducere] [(opțional) \"-not\"] (actualizează starea procesului de traducere)"},
+				{name: "Comenzile disponibile administratorilor", value: "-start [nume serie] [număr / nume episod] (începe traducerea unui episod)\n-add [nume serie] [URL pentru thumbnail-ul seriei] [lista de cuvinte cheie a seriei] (adaugă o serie nouă pe baza parametrilor)\n-drop [nume serie] (înlatură o serie din lista bot-ului)\n-edit [nume serie] [proprietatea care trebuie editată] [noua valoare a proprietății] (editează una dintre proprietățile unei serii)"}
 		)
 		.setTimestamp();
 
