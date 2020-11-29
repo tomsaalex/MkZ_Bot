@@ -1,9 +1,7 @@
 const Discord = require('discord.js');
 const client = new Discord.Client();
 const fs = require('fs');
-const encoded_tok = JSON.parse(fs.readFileSync('token.json')).token;
-const buff = Buffer.from(encoded_tok, 'base64');
-const token = buff.toString('ascii');
+const token = JSON.parse(fs.readFileSync('token.json')).token;
 const Avatar = 'http://manga-kids.com/wp-content/uploads/2020/08/Hereisararerobotpepe_d7d99eaf4edf4b0adae514bcc94ce151.png';
 
 /*
