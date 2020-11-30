@@ -1,1 +1,73 @@
-[{"keyWords":["inazuma","eleven","orion","kokuin"],"image":"https://upload.wikimedia.org/wikipedia/en/thumb/f/f5/Inazumaeleven.orionnokokuin.animekeyvisual.jpg/220px-Inazumaeleven.orionnokokuin.animekeyvisual.jpg","episod":"37","traducere":1,"verificare":0,"typesetting":1,"encode":0,"title":"Inazuma Eleven: Orion no Kokuin"},{"title":"Bakuten Shoot Beyblade","keyWords":["beyblade","bakuten","shoot"],"image":"http://manga-kids.com/wp-content/uploads/2020/08/21118.jpg","episod":"07","traducere":1,"verificare":0,"typesetting":1,"encode":0},{"title":"Jujutsu Kaisen","keyWords":["jujutsu","kaisen"],"image":"https://upload.wikimedia.org/wikipedia/en/thumb/4/46/Jujutsu_kaisen.jpg/220px-Jujutsu_kaisen.jpg","episod":"09","traducere":0,"verificare":0,"typesetting":0,"encode":0},{"title":"Ikebukuro West Gate Park","keyWords":["ikebuko","ikebukuro","ike","west","park"],"image":"https://cdn.myanimelist.net/images/anime/1277/108376.jpg","episod":"06","traducere":1,"verificare":0,"typesetting":0,"encode":0},{"title":"Jyu-Oh-Sei","keyWords":["yuyu","jyu"],"image":"https://cdn.myanimelist.net/images/anime/3/14079.jpg","episod":"03","traducere":1,"verificare":0,"typesetting":0,"encode":0}]
+[
+    {
+        "keyWords": [
+            "inazuma",
+            "eleven",
+            "orion",
+            "kokuin"
+        ],
+        "image": "https://upload.wikimedia.org/wikipedia/en/thumb/f/f5/Inazumaeleven.orionnokokuin.animekeyvisual.jpg/220px-Inazumaeleven.orionnokokuin.animekeyvisual.jpg",
+        "episod": "37",
+        "traducere": 1,
+        "verificare": 0,
+        "typesetting": 1,
+        "encode": 0,
+        "title": "Inazuma Eleven: Orion no Kokuin"
+    },
+    {
+        "title": "Bakuten Shoot Beyblade",
+        "keyWords": [
+            "beyblade",
+            "bakuten",
+            "shoot"
+        ],
+        "image": "http://manga-kids.com/wp-content/uploads/2020/08/21118.jpg",
+        "episod": "07",
+        "traducere": 1,
+        "verificare": 0,
+        "typesetting": 1,
+        "encode": 0
+    },
+    {
+        "title": "Jujutsu Kaisen",
+        "keyWords": [
+            "jujutsu",
+            "kaisen"
+        ],
+        "image": "https://upload.wikimedia.org/wikipedia/en/thumb/4/46/Jujutsu_kaisen.jpg/220px-Jujutsu_kaisen.jpg",
+        "episod": "09",
+        "traducere": 0,
+        "verificare": 0,
+        "typesetting": 0,
+        "encode": 0
+    },
+    {
+        "title": "Ikebukuro West Gate Park",
+        "keyWords": [
+            "ikebuko",
+            "ikebukuro",
+            "ike",
+            "west",
+            "park"
+        ],
+        "image": "https://cdn.myanimelist.net/images/anime/1277/108376.jpg",
+        "episod": "06",
+        "traducere": 1,
+        "verificare": 0,
+        "typesetting": 0,
+        "encode": 0
+    },
+    {
+        "title": "Jyu-Oh-Sei",
+        "keyWords": [
+            "yuyu",
+            "jyu"
+        ],
+        "image": "https://cdn.myanimelist.net/images/anime/3/14079.jpg",
+        "episod": "03",
+        "traducere": 1,
+        "verificare": 0,
+        "typesetting": 0,
+        "encode": 0
+    }
+]
