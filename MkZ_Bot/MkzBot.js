@@ -4,21 +4,21 @@ const fs = require('fs');
 const token = JSON.parse(fs.readFileSync('token.json')).token;
 const Avatar = 'http://manga-kids.com/wp-content/uploads/2020/08/Hereisararerobotpepe_d7d99eaf4edf4b0adae514bcc94ce151.png';
 
-/*
+
 const mainServerID = "313373031022198786";
-const mainChannelID = "313377181768089611";
-*/
+const mainChannelID = "745231871905890374";
+
 
 //ID-ul serverului si al canalului pentru actualizari
-const mainServerID = "595184419950559233";
-const mainChannelID = "595184420382834688";
+/*const mainServerID = "595184419950559233";
+const mainChannelID = "595184420382834688";*/
 
 var mainChannel;
 
 client.login(token);
 
 var text, onGoingSeries;
-const prefix = '-';
+const prefix = '--';
 
 client.on('ready', () => {
 	mainChannel = client.guilds.cache.get(mainServerID).channels.resolve(mainChannelID);
@@ -58,6 +58,16 @@ client.on('message', msg => {
 		series.encode = 0;
 		series.episod = args[1];
 		fs.writeFileSync('anime.json', onGoingSeries);
+	}
+	else if(command == "refresh")
+	{
+	    if(!(checkPermission(msg.member, 'Administrator🌟') || checkPermission(msg.member,'Tăticii mari')))
+		{
+			msg.reply(" nu ai permisiunile necesare pentru a folosi comanda");
+			return;
+		}
+		
+	    refreshJSON();
 	}
 	else if(command == "update") // -update [serie] [stadiu] [optional: -not]
 	{
