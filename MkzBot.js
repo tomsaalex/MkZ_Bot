@@ -1,10 +1,7 @@
 const Discord = require('discord.js');
 const client = new Discord.Client();
 const fs = require('fs');
-const token = JSON.parse(fs.readFileSync('token.json')).token;
-const Avatar = 'http://manga-kids.com/wp-content/uploads/2020/08/Hereisararerobotpepe_d7d99eaf4edf4b0adae514bcc94ce151.png';
-
-
+const { token } = require("./token.json");
 const mainServerID = "313373031022198786";
 const mainChannelID = "745231871905890374";
 
@@ -22,7 +19,6 @@ const prefix = '--';
 
 client.on('ready', () => {
 	mainChannel = client.guilds.cache.get(mainServerID).channels.resolve(mainChannelID);
-	//client.user.setAvatar(Avatar);
 	refreshJSON();
 });
 
@@ -116,7 +112,7 @@ client.on('message', msg => {
 			case 'encode': series.encode = valoareViitoare; break;
 		}
 		showProgres(msg, args, mainChannel);
-		fs.writeFileSync('anime.json', JSON.stringify(onGoingSeries));
+		fs.writeFileSync('anime.json', JSON.stringify(onGoingSeries, null, 4));
 	}
 	else if(command == "progres")
 	{
@@ -147,7 +143,7 @@ client.on('message', msg => {
 		anime.encoding = 0;
 		anime.typesetting = 0;
 		onGoingSeries.push(anime);
-		fs.writeFileSync('anime.json', JSON.stringify(onGoingSeries));
+		fs.writeFileSync('anime.json', JSON.stringify(onGoingSeries, null, 4));
 		refreshJSON();
 		
 		msg.reply(" seria " + anime.title + " a fost adăugată");
@@ -177,7 +173,7 @@ client.on('message', msg => {
 					break;
 				}
 
-		fs.writeFileSync('anime.json', JSON.stringify(onGoingSeries));
+		fs.writeFileSync('anime.json', JSON.stringify(onGoingSeries, null, 4));
 		refreshJSON();
 		msg.reply(" seria " + series.title + " a fost înlăturată");
 		
@@ -200,7 +196,7 @@ client.on('message', msg => {
 
 		series[propertyToChange] = newPropertyValue;
 				
-		fs.writeFileSync('anime.json', JSON.stringify(onGoingSeries));
+		fs.writeFileSync('anime.json', JSON.stringify(onGoingSeries, null, 4));
 		refreshJSON();
 
 		msg.reply("seria " + series.title + " a fost editată");			
