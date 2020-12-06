@@ -69,6 +69,8 @@ client.on('message', msg => {
 	}
 	else if(command == "update") // -update [serie] [stadiu] [optional: -not]
 	{
+		
+		let embedColor = [150, 0, 255];
 		if(	!(checkPermission(msg.member, 'Traducător')) 	&& args[1] == "traducere"
 		|| 	!(checkPermission(msg.member, 'Verificator')) 	&& args[1] == "verificare"
 		||	!(checkPermission(msg.member, 'Typesetter')) 	&& args[1] == "typesetting"
@@ -103,8 +105,11 @@ client.on('message', msg => {
 		let valoareViitoare = 1;
 
 		if(args[2] == "-not")
-			valoareViitoare = 0;
-		else if(args[2] != null) //NETESTAT
+			{
+				valoareViitoare = 0;
+				embedColor = [255, 0, 0];
+			}
+		else if(args[2] != null) 
 			msg.reply(" argumentul \„" + args[2] + "\” nu este recunoscut");
 		switch(args[1])
 		{
@@ -113,13 +118,13 @@ client.on('message', msg => {
 			case 'typesetting': series.typesetting = valoareViitoare; break;
 			case 'encode': series.encode = valoareViitoare; break;
 		}
-		showProgres(msg, args, mainChannel);
+		showProgres(msg, args, mainChannel, embedColor);
 		fs.writeFileSync('anime.json', JSON.stringify(onGoingSeries, null, 4));
 	}
 	else if(command == "progres")
 	{
-
-		showProgres(msg, args, msg.channel);
+		let embedColor = [150, 0, 255];
+		showProgres(msg, args, msg.channel, embedColor);
 	}
 	else if(command == "add")
 	{
@@ -242,7 +247,7 @@ function checkPermission(user, roleNecessary)
 	return false;
 }
 
-function showProgres(msg, args, chan)
+function showProgres(msg, args, chan, color)
 {
 		let series = SearchJSONForKeyWord(onGoingSeries, args);
 		if(series == null) 
@@ -253,7 +258,7 @@ function showProgres(msg, args, chan)
 		
 
 		const exampleEmbed = new Discord.MessageEmbed()
-		.setColor([150, 0, 255])
+		.setColor(color)
 		.setTitle(series.title + ' #' + series.episod)
 		.addFields(
 			{ name: 'Progres', value: boolToStrikeThrough(series.traducere, "Traducere") + ' \n' + boolToStrikeThrough(series.verificare, "Verificare") + ' \n' + boolToStrikeThrough(series.typesetting, "Typesetting") + ' \n' + boolToStrikeThrough(series.encode, "Encode")},
