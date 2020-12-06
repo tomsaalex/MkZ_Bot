@@ -3,13 +3,9 @@ const client = new Discord.Client();
 const fs = require('fs');
 const { token } = require("./token.json");
 
-
-const mainServerID = "386166486634463239";
-const mainChannelID = "386166486634463244";
-
 //ID-uri Cenaclu
-//const mainServerID = "313373031022198786";
-//const mainChannelID = "745231871905890374";
+const mainServerID = "313373031022198786";
+const mainChannelID = "745231871905890374";
 
 
 //ID-uri Sinod
