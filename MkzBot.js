@@ -3,7 +3,6 @@ const client = new Discord.Client();
 const fs = require('fs');
 const { token } = require("./token.json");
 
-
 //ID-uri Cenaclu
 const mainServerID = "313373031022198786";
 const mainChannelID = "745231871905890374";
@@ -129,12 +128,21 @@ client.on('message', msg => {
 			msg.reply(" nu ai permisiunile necesare pentru a folosi comanda");
 			return;
 		}
+
+		for(let anime of onGoingSeries)
+		{
+			if(anime.title == args[0])
+				{
+					msg.reply(" seria " + args[0] + " este deja adăugată");
+					return;
+				}
+		}
 		let anime = new Anime();
 		let keyWords = new Array();
 		let i = 2;
 		while(args[i] != null)
 		{
-			keyWords.push(args[i++]);
+			keyWords.push(args[i++].toLowerCase());
 		}
 
 		anime.title = args[0];
