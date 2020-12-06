@@ -3,9 +3,13 @@ const client = new Discord.Client();
 const fs = require('fs');
 const { token } = require("./token.json");
 
+
+const mainServerID = "386166486634463239";
+const mainChannelID = "386166486634463244";
+
 //ID-uri Cenaclu
-const mainServerID = "313373031022198786";
-const mainChannelID = "745231871905890374";
+//const mainServerID = "313373031022198786";
+//const mainChannelID = "745231871905890374";
 
 
 //ID-uri Sinod
@@ -94,7 +98,7 @@ client.on('message', msg => {
 				msg.reply(" rolul specificat nu a fost găsit");
 				return;
 			}
-		let series = SearchJSONForKeyWord(onGoingSeries, args[0]);// args[0] in loc de args NETESTAT
+		let series = SearchJSONForKeyWord(onGoingSeries, args[0]);
 
 		if(series == null) 
 		{
@@ -118,6 +122,8 @@ client.on('message', msg => {
 			case 'typesetting': series.typesetting = valoareViitoare; break;
 			case 'encode': series.encode = valoareViitoare; break;
 		}
+
+		series.lastUpdate = new Date();
 		showProgres(msg, args, mainChannel, embedColor);
 		fs.writeFileSync('anime.json', JSON.stringify(onGoingSeries, null, 4));
 	}
@@ -158,6 +164,7 @@ client.on('message', msg => {
 		anime.verificare = 0;
 		anime.encoding = 0;
 		anime.typesetting = 0;
+		anime.lastUpdate = new Date();
 		onGoingSeries.push(anime);
 		fs.writeFileSync('anime.json', JSON.stringify(onGoingSeries, null, 4));
 		refreshJSON();
@@ -265,7 +272,7 @@ function showProgres(msg, args, chan, color)
 		)
 
 		.setThumbnail(series.image)
-		.setTimestamp();
+		.setTimestamp(series.lastUpdate);
 
 		chan.send(exampleEmbed);
 }
@@ -315,7 +322,7 @@ function replaceTextInString(str)
 
 class Anime{
 	
-	constructor(title, keyWords, image, traducere, verificare, typesetting, encode, episod)
+	constructor(title, keyWords, image, traducere, verificare, typesetting, encode, episod, lastUpdate)
 	{
 		this.title = title;
 		this.keyWords = keyWords;
@@ -325,5 +332,6 @@ class Anime{
 		this.verificare = verificare;
 		this.typesetting = typesetting;
 		this.encode = encode;
+		this.lastUpdate = lastUpdate;
 	}
 }
