@@ -2,13 +2,16 @@ const Discord = require('discord.js');
 const client = new Discord.Client();
 const fs = require('fs');
 const { token } = require("./token.json");
+
+
+//ID-uri Cenaclu
 const mainServerID = "313373031022198786";
 const mainChannelID = "745231871905890374";
 
 
-//ID-ul serverului si al canalului pentru actualizari
-/*const mainServerID = "595184419950559233";
-const mainChannelID = "595184420382834688";*/
+//ID-uri Sinod
+//const mainServerID = "595184419950559233";
+//const mainChannelID = "595184420382834688";
 
 var mainChannel;
 
@@ -208,9 +211,9 @@ client.on('message', msg => {
 		.setTitle("Comenzile disponibile")
 		.addFields(
 			
-				{name: "Comenzile disponibile utilizatorilor", value: "-progres [nume serie] (Afișează starea episodului curent din seria dată)"},
-				{name: "Comenzile disponibile membrilor echipei", value: "-update [nume serie] [etapa procesului de traducere] [(opțional) \"-not\"] (actualizează starea procesului de traducere)"},
-				{name: "Comenzile disponibile administratorilor", value: "-start [nume serie] [număr / nume episod] (începe traducerea unui episod)\n-add [nume serie] [URL pentru thumbnail-ul seriei] [lista de cuvinte cheie a seriei] (adaugă o serie nouă pe baza parametrilor)\n-drop [nume serie] (înlatură o serie din lista bot-ului)\n-edit [nume serie] [proprietatea care trebuie editată] [noua valoare a proprietății] (editează una dintre proprietățile unei serii)"}
+				{name: "Comenzile disponibile utilizatorilor", value: prefix + "progres [nume serie] (Afișează starea episodului curent din seria dată)"},
+				{name: "Comenzile disponibile membrilor echipei", value: prefix + "update [nume serie] [etapa procesului de traducere] [(opțional) \"-not\"] (actualizează starea procesului de traducere)"},
+				{name: "Comenzile disponibile administratorilor", value: prefix + "start [nume serie] [număr / nume episod] (începe traducerea unui episod)\n" + prefix +"add [nume serie] [URL pentru thumbnail-ul seriei] [lista de cuvinte cheie a seriei] (adaugă o serie nouă pe baza parametrilor)\n" + prefix +"drop [nume serie] (înlatură o serie din lista bot-ului)\n" + prefix + "edit [nume serie] [proprietatea care trebuie editată] [noua valoare a proprietății] (editează una dintre proprietățile unei serii)"}
 		)
 		.setTimestamp();
 
