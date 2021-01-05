@@ -135,6 +135,23 @@ client.on('message', msg => {
 			msg.reply(" nu ai permisiunile necesare pentru a folosi comanda");
 			return;
 		}
+		if(args[0] == null)
+		{
+			msg.reply(" trebuie să specifici un titlu pentru serie");
+			return;
+		}
+		if(args[1] == null)
+		{
+			msg.reply(" trebuie să specifici un link pentru thumbnail-ul seriei");
+			return;
+		}
+		if(args[2] == null)
+		{
+			msg.reply(" trebuie să specifici măcar un cuvânt cheie cu care să poată fi identificată seria");
+			return;
+		}
+
+		args[0] = args[0].replace("---", " ");
 
 		for(let anime of onGoingSeries)
 		{
@@ -169,10 +186,14 @@ client.on('message', msg => {
 	}	
 	else if(command == "drop")
 	{
-		
 		if(	!(checkPermission(msg.member, 'Tăticii mari') || checkPermission(msg.member, 'Administrator🌟')))
 		{
 			msg.reply(" nu ai permisiunile necesare pentru a folosi comanda");
+			return;
+		}
+		if(args[0] == null)
+		{
+			msg.reply(" nu ai precizat o serie care să fie înlăturată");
 			return;
 		}
 
@@ -204,14 +225,36 @@ client.on('message', msg => {
 			msg.reply(" nu ai permisiunile necesare pentru a folosi comanda");
 			return;
 		}
-
+		if(args[0] == null)
+		{
+			msg.reply(" nu ai specificat o serie");
+			return;
+		}
 		let series = SearchJSONForKeyWord(onGoingSeries, args[0]);
+		if(series == null)
+		{
+			msg.reply(" seria " + args[0] + " nu a fost găsită");
+			return;
+		}
+		if(args[1] == null)
+		{
+			msg.reply(" nu ai specificat ce trebuie editat la seria " + args[0]);
+			return;
+		}
+		if(series[args[1]] == null)
+		{
+			msg.reply(" proprietatea pe care încerci să o editezi nu există sau nu poate fi editată momentan");
+			return;
+		}
+		if(args[2] == null){
+			msg.reply(' nu ai specificat cu ce trebuie înlocuită valoarea proprietății "' + args[1] +  '"');
+			return;
+		}
+		args[2] = args[2].replace("---", " ");
+
 		let propertyToChange = args[1];
 		let newPropertyValue;
-		if(propertyToChange === "title")
-			newPropertyValue = replaceTextInString(args[2]);
-		else
-			newPropertyValue = args[2];
+		newPropertyValue = args[2];
 
 		series[propertyToChange] = newPropertyValue;
 				
@@ -297,23 +340,6 @@ function SearchJSONForKeyWord(obj, keyword)
 	}
 
 	return null;
-}
-
-function replaceTextInString(str)
-{
-	for(let i = 0; i < str.length - 2; i++)
-	{
-		arr = Array.from(str);
-		if(arr[i] === arr[i + 1] && arr[i + 1] === arr[i + 2] && arr[i + 2] === "-")
-		{
-			arr[i] = " ";
-			for(let j = i + 3; j < str.length; j++)
-				arr[j - 2] = arr[j];
-			str = arr.join("");
-			str = str.substr(0, str.length - 2);
-		}
-	}
-	return str;
 }
 
 class Anime{

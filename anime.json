@@ -69,5 +69,68 @@
         "verificare": 0,
         "typesetting": 0,
         "encode": 0
+    },
+    {
+        "title": "mah ouka",
+        "keyWords": [
+            "m"
+        ],
+        "image": "https://cdn.myanimelist.net/images/anime/12/7239.webp",
+        "episod": "01",
+        "traducere": 0,
+        "verificare": 0,
+        "typesetting": 0,
+        "lastUpdate": "2021-01-05T19:57:09.668Z",
+        "encoding": 0
+    },
+    {
+        "keyWords": [],
+        "episod": "01",
+        "traducere": 0,
+        "verificare": 0,
+        "typesetting": 0,
+        "lastUpdate": "2021-01-05T20:49:44.583Z",
+        "encoding": 0
+    },
+    {
+        "title": "y",
+        "keyWords": [
+            "t"
+        ],
+        "image": "https://cdn.myanimelist.net/images/anime/12/7239.webp",
+        "episod": "01",
+        "traducere": 0,
+        "verificare": 0,
+        "typesetting": 0,
+        "lastUpdate": "2021-01-05T20:53:42.042Z",
+        "encoding": 0
+    },
+    {
+        "title": "MahoukaundefinedKoukou",
+        "keyWords": [
+            "https://cdn.myanimelist.net/images/anime/12/7239.webp",
+            "mahouka"
+        ],
+        "image": "",
+        "episod": "01",
+        "traducere": 0,
+        "verificare": 0,
+        "typesetting": 0,
+        "lastUpdate": "2021-01-05T20:56:53.357Z",
+        "encoding": 0
+    },
+    {
+        "title": "Mahouka Koukou",
+        "keyWords": [
+            "https://cdn.myanimelist.net/images/anime/12/7239.webp",
+            "mahouka"
+        ],
+        "image": "",
+        "episod": "01",
+        "traducere": 0,
+        "verificare": 0,
+        "typesetting": 0,
+        "lastUpdate": "2021-01-05T21:00:41.686Z",
+        "encoding": 0
     }
 ]
