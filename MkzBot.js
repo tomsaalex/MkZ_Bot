@@ -201,8 +201,32 @@ client.on('message', msg => {
 			msg.reply(" nu ai permisiunile necesare pentru a folosi comanda");
 			return;
 		}
+		if(args[0] == null)
+		{
+			msg.reply(" nu ai specificat o serie");
+			return;
+		}
 
 		let series = SearchJSONForKeyWord(onGoingSeries, args[0]);
+		if(series == null)
+		{
+			msg.reply(" seria " + args[0] + " nu a fost găsită");
+			return;
+		}
+		if(args[1] == null)
+		{
+			msg.reply(" nu ai specificat ce trebuie editat la seria " + args[0]);
+			return;
+		}
+		if(series[args[1]] == null)
+		{
+			msg.reply(" proprietatea pe care încerci să o editezi nu există sau nu poate fi editată momentan");
+			return;
+		}
+		if(args[2] == null){
+			msg.reply(' nu ai specificat cu ce trebuie înlocuită valoarea proprietății "' + args[1] +  '"');
+			return;
+		}
 		let propertyToChange = args[1];
 		let newPropertyValue;
 		if(propertyToChange === "title")
