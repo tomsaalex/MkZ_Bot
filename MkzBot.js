@@ -40,7 +40,7 @@ client.on('message', msg => {
 			msg.reply(" seria nu a fost gasita");
 			return;
 		}
-		if(!(checkPermission(msg.member, 'Administratori') || checkPermission(msg.member,'Tăticii mari')))
+		if(!(checkPermission(msg.member, 'Administratori') || checkPermission(msg.member,'Tăticii mari') || checkPermission(msg.member,'Tăticul mic')))
 		{
 			msg.reply(" nu ai permisiunile necesare pentru a folosi comanda");
 			return;
@@ -59,7 +59,7 @@ client.on('message', msg => {
 	}
 	else if(command == "refresh")
 	{
-	    if(!(checkPermission(msg.member, 'Administrator🌟') || checkPermission(msg.member,'Tăticii mari')))
+	    if(!(checkPermission(msg.member, 'Administrator🌟') || checkPermission(msg.member,'Tăticii mari')  || checkPermission(msg.member,'Tăticul mic')))
 		{
 			msg.reply(" nu ai permisiunile necesare pentru a folosi comanda");
 			return;
@@ -130,7 +130,7 @@ client.on('message', msg => {
 	}
 	else if(command == "add")
 	{
-		if(	!(checkPermission(msg.member, 'Tăticii mari') || checkPermission(msg.member, 'Administrator🌟')))
+		if(	!(checkPermission(msg.member, 'Tăticii mari') || checkPermission(msg.member, 'Administrator🌟') || checkPermission(msg.member,'Tăticul mic')))
 		{
 			msg.reply(" nu ai permisiunile necesare pentru a folosi comanda");
 			return;
@@ -186,7 +186,7 @@ client.on('message', msg => {
 	}	
 	else if(command == "drop")
 	{
-		if(	!(checkPermission(msg.member, 'Tăticii mari') || checkPermission(msg.member, 'Administrator🌟')))
+		if(	!(checkPermission(msg.member, 'Tăticii mari') || checkPermission(msg.member, 'Administrator🌟') || checkPermission(msg.member,'Tăticul mic')))
 		{
 			msg.reply(" nu ai permisiunile necesare pentru a folosi comanda");
 			return;
@@ -220,7 +220,7 @@ client.on('message', msg => {
 	}
 	else if(command == "edit")
 	{
-		if(	!(checkPermission(msg.member, 'Tăticii mari') || checkPermission(msg.member, 'Administrator🌟')))
+		if(	!(checkPermission(msg.member, 'Tăticii mari') || checkPermission(msg.member, 'Administrator🌟') || checkPermission(msg.member,'Tăticul mic')))
 		{
 			msg.reply(" nu ai permisiunile necesare pentru a folosi comanda");
 			return;
