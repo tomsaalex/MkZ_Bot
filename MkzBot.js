@@ -7,7 +7,6 @@ const { token } = require("./token.json");
 const mainServerID = "313373031022198786";
 const mainChannelID = "745231871905890374";
 
-
 //ID-uri Sinod
 //const mainServerID = "595184419950559233";
 //const mainChannelID = "595184420382834688";
@@ -151,7 +150,7 @@ client.on('message', msg => {
 			return;
 		}
 
-		args[0] = args[0].replace("---", " ");
+		args[0] = args[0].replace(/---/g, " ");
 
 		for(let anime of onGoingSeries)
 		{
@@ -250,7 +249,7 @@ client.on('message', msg => {
 			msg.reply(' nu ai specificat cu ce trebuie înlocuită valoarea proprietății "' + args[1] +  '"');
 			return;
 		}
-		args[2] = args[2].replace("---", " ");
+		args[2] = args[2].replace(/---/g, " ");
 
 		let propertyToChange = args[1];
 		let newPropertyValue;
