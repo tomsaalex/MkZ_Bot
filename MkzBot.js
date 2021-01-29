@@ -37,17 +37,17 @@ client.on('message', msg => {
 		if(series == null) 
 		{
 			msg.reply(" seria nu a fost gasita");
-			return;
+			msg.react('❌'); return; 
 		}
 		if(!(checkPermission(msg.member, 'Administratori') || checkPermission(msg.member,'Tăticii mari') || checkPermission(msg.member,'Tăticul mic')))
 		{
 			msg.reply(" nu ai permisiunile necesare pentru a folosi comanda");
-			return;
+			msg.react('❌'); return; 
 		}
 		if(args[1] == null)
 		{
 			msg.reply(" trebuie să specifici un episod");
-			return;
+			msg.react('❌'); return; 
 		}
 		series.traducere = 0;
 		series.verificare = 0;
@@ -61,7 +61,7 @@ client.on('message', msg => {
 	    if(!(checkPermission(msg.member, 'Administrator🌟') || checkPermission(msg.member,'Tăticii mari')  || checkPermission(msg.member,'Tăticul mic')))
 		{
 			msg.reply(" nu ai permisiunile necesare pentru a folosi comanda");
-			return;
+			msg.react('❌'); return; 
 		}
 		
 	    refreshJSON();
@@ -77,13 +77,13 @@ client.on('message', msg => {
 	  	)
 		{
 			msg.reply(" nu ai permisiunile necesare pentru a folosi comanda");
-			return;
+			msg.react('❌'); return; 
 		}
 
 		if(args[1] == null)
 			{
 				msg.reply(" nu ai specificat un rol");
-				return;
+				msg.react('❌'); return; 
 			}
 		if(args[1] != "traducere"
 		&& args[1] != "verificare"
@@ -91,14 +91,14 @@ client.on('message', msg => {
 		&& args[1] != "encode")
 			{
 				msg.reply(" rolul specificat nu a fost găsit");
-				return;
+				msg.react('❌'); return; 
 			}
 		let series = SearchJSONForKeyWord(onGoingSeries, args[0]);
 
 		if(series == null) 
 		{
 			msg.reply(" seria nu a fost gasită");
-			return;
+			msg.react('❌'); return; 
 		}
 	
 		let valoareViitoare = 1;
@@ -126,28 +126,30 @@ client.on('message', msg => {
 	{
 		let embedColor = [150, 0, 255];
 		showProgres(msg, args, msg.channel, embedColor);
+		return;
+		
 	}
 	else if(command == "add")
 	{
 		if(	!(checkPermission(msg.member, 'Tăticii mari') || checkPermission(msg.member, 'Administrator🌟') || checkPermission(msg.member,'Tăticul mic')))
 		{
 			msg.reply(" nu ai permisiunile necesare pentru a folosi comanda");
-			return;
+			msg.react('❌'); return; 
 		}
 		if(args[0] == null)
 		{
 			msg.reply(" trebuie să specifici un titlu pentru serie");
-			return;
+			msg.react('❌'); return; 
 		}
 		if(args[1] == null)
 		{
 			msg.reply(" trebuie să specifici un link pentru thumbnail-ul seriei");
-			return;
+			msg.react('❌'); return; 
 		}
 		if(args[2] == null)
 		{
 			msg.reply(" trebuie să specifici măcar un cuvânt cheie cu care să poată fi identificată seria");
-			return;
+			msg.react('❌'); return; 
 		}
 
 		args[0] = args[0].replace(/---/g, " ");
@@ -157,7 +159,7 @@ client.on('message', msg => {
 			if(anime.title == args[0])
 				{
 					msg.reply(" seria " + args[0] + " este deja adăugată");
-					return;
+					msg.react('❌'); return; 
 				}
 		}
 		let anime = new Anime();
@@ -188,19 +190,19 @@ client.on('message', msg => {
 		if(	!(checkPermission(msg.member, 'Tăticii mari') || checkPermission(msg.member, 'Administrator🌟') || checkPermission(msg.member,'Tăticul mic')))
 		{
 			msg.reply(" nu ai permisiunile necesare pentru a folosi comanda");
-			return;
+			msg.react('❌'); return; 
 		}
 		if(args[0] == null)
 		{
 			msg.reply(" nu ai precizat o serie care să fie înlăturată");
-			return;
+			msg.react('❌'); return; 
 		}
 
 		let series = SearchJSONForKeyWord(onGoingSeries, args[0]);
 		if(series == null)
 		{
 			msg.reply(" seria " + args[0] + " nu a fost găsită");
-			return;
+			msg.react('❌'); return; 
 		}
 		for(let i = 0; i < onGoingSeries.length; i++)
 			if(onGoingSeries[i].title === series.title)
@@ -222,32 +224,32 @@ client.on('message', msg => {
 		if(	!(checkPermission(msg.member, 'Tăticii mari') || checkPermission(msg.member, 'Administrator🌟') || checkPermission(msg.member,'Tăticul mic')))
 		{
 			msg.reply(" nu ai permisiunile necesare pentru a folosi comanda");
-			return;
+			msg.react('❌'); return; 
 		}
 		if(args[0] == null)
 		{
 			msg.reply(" nu ai specificat o serie");
-			return;
+			msg.react('❌'); return; 
 		}
 		let series = SearchJSONForKeyWord(onGoingSeries, args[0]);
 		if(series == null)
 		{
 			msg.reply(" seria " + args[0] + " nu a fost găsită");
-			return;
+			msg.react('❌'); return; 
 		}
 		if(args[1] == null)
 		{
 			msg.reply(" nu ai specificat ce trebuie editat la seria " + args[0]);
-			return;
+			msg.react('❌'); return; 
 		}
 		if(series[args[1]] == null)
 		{
 			msg.reply(" proprietatea pe care încerci să o editezi nu există sau nu poate fi editată momentan");
-			return;
+			msg.react('❌'); return; 
 		}
 		if(args[2] == null){
 			msg.reply(' nu ai specificat cu ce trebuie înlocuită valoarea proprietății "' + args[1] +  '"');
-			return;
+			msg.react('❌'); return; 
 		}
 		args[2] = args[2].replace(/---/g, " ");
 
@@ -277,6 +279,8 @@ client.on('message', msg => {
 
 		msg.channel.send(helpEmbed);
 	}
+	
+	msg.react('✅');
 });
 
 function refreshJSON()
@@ -298,7 +302,7 @@ function showProgres(msg, args, chan, color)
 		if(series == null) 
 		{
 			msg.reply(" seria nu a fost gasita");
-			return;
+			msg.react('❌'); return; 
 		}
 		
 
@@ -313,6 +317,7 @@ function showProgres(msg, args, chan, color)
 		.setTimestamp(series.lastUpdate);
 
 		chan.send(exampleEmbed);
+		msg.react('✅');
 }
 
 function boolToStrikeThrough(value, text)
