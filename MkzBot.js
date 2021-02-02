@@ -278,7 +278,7 @@ client.on('message', msg => {
 		.setTimestamp();
 
 		msg.channel.send(helpEmbed);
-	}
+	} else return;
 	
 	msg.react('✅');
 });
