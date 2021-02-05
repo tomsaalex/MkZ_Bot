@@ -11,6 +11,8 @@ const mainChannelID = "745231871905890374";
 //const mainServerID = "595184419950559233";
 //const mainChannelID = "595184420382834688";
 
+
+
 var mainChannel;
 
 client.login(token);
@@ -136,33 +138,38 @@ client.on('message', msg => {
 			msg.reply(" nu ai permisiunile necesare pentru a folosi comanda");
 			msg.react('❌'); return; 
 		}
-		if(args[0] == null)
+		if(args[0] != "anime" && args[0] != "manga")
+		{
+			msg.reply(" trebuie să specifici dacă seria e anime sau manga");
+			return;
+		}
+		if(args[1] == null)
 		{
 			msg.reply(" trebuie să specifici un titlu pentru serie");
 			msg.react('❌'); return; 
 		}
-		if(args[1] == null)
+		if(args[2] == null)
 		{
 			msg.reply(" trebuie să specifici un link pentru thumbnail-ul seriei");
 			msg.react('❌'); return; 
 		}
-		if(args[2] == null)
+		if(args[3] == null)
 		{
 			msg.reply(" trebuie să specifici măcar un cuvânt cheie cu care să poată fi identificată seria");
 			msg.react('❌'); return; 
 		}
 
-		args[0] = args[0].replace(/---/g, " ");
+		args[1] = args[1].replace(/---/g, " ");
 
 		for(let anime of onGoingSeries)
 		{
-			if(anime.title == args[0])
+			if(anime.title == args[1])
 				{
-					msg.reply(" seria " + args[0] + " este deja adăugată");
+					msg.reply(" seria " + args[1] + " este deja adăugată");
 					msg.react('❌'); return; 
 				}
 		}
-		let anime = new Anime();
+		
 		let keyWords = new Array();
 		let i = 2;
 		while(args[i] != null)
@@ -170,20 +177,40 @@ client.on('message', msg => {
 			keyWords.push(args[i++].toLowerCase());
 		}
 
-		anime.title = args[0];
-		anime.image = args[1];
-		anime.episod = "01";
-		anime.keyWords = keyWords;
-		anime.traducere = 0;
-		anime.verificare = 0;
-		anime.encoding = 0;
-		anime.typesetting = 0;
-		anime.lastUpdate = new Date();
-		onGoingSeries.push(anime);
+		let series;
+		if(args[0] == "anime")
+		{	
+			series = new Anime();
+		}
+		else if(args[0] == "manga")
+		{
+			series = new Manga();
+		}
+
+		series.type = args[0];
+		series.title = args[1];
+		series.image = args[2];
+		series.episod = "01";
+		series.keyWords = keyWords;
+		series.traducere = 0;
+		series.verificare = 0;
+		series.lastUpdate = new Date();
+		
+		if(series.type == "anime")
+		{
+			series.encoding = 0;
+			series.typesetting = 0;
+		}
+		else if(series.type == "manga")
+		{
+			series.editare = 0;
+		}
+
+		onGoingSeries.push(series);
 		fs.writeFileSync('anime.json', JSON.stringify(onGoingSeries, null, 4));
 		refreshJSON();
 		
-		msg.reply(" seria " + anime.title + " a fost adăugată");
+		msg.reply(" seria " + series.title + " a fost adăugată");
 	}	
 	else if(command == "drop")
 	{
@@ -305,17 +332,26 @@ function showProgres(msg, args, chan, color)
 			msg.react('❌'); return; 
 		}
 		
-
 		const exampleEmbed = new Discord.MessageEmbed()
 		.setColor(color)
 		.setTitle(series.title + ' #' + series.episod)
-		.addFields(
-			{ name: 'Progres', value: boolToStrikeThrough(series.traducere, "Traducere") + ' \n' + boolToStrikeThrough(series.verificare, "Verificare") + ' \n' + boolToStrikeThrough(series.typesetting, "Typesetting") + ' \n' + boolToStrikeThrough(series.encode, "Encode")},
-		)
-
 		.setThumbnail(series.image)
 		.setTimestamp(series.lastUpdate);
 
+		if(series.type == "anime")
+		{
+			exampleEmbed.addFields(
+				{ 
+					name: 'Progres', value: boolToStrikeThrough(series.traducere, "Traducere") + ' \n' + boolToStrikeThrough(series.verificare, "Verificare") + ' \n' + boolToStrikeThrough(series.typesetting, "Typesetting") + ' \n' + boolToStrikeThrough(series.encode, "Encode")
+				});
+		}
+		else if(series.type == "manga")
+		{
+			exampleEmbed.addFields(
+				{ 
+					name: 'Progres', value: boolToStrikeThrough(series.traducere, "Traducere") + ' \n' + boolToStrikeThrough(series.verificare, "Verificare") + ' \n' + boolToStrikeThrough(series.editare, "Editare")
+				});
+		}
 		chan.send(exampleEmbed);
 		msg.react('✅');
 }
@@ -331,7 +367,6 @@ function boolToStrikeThrough(value, text)
 
 function SearchJSONForKeyWord(obj, keyword)
 {
-	let series = new Anime();
 	for(var i = 0; i < obj.length; i++)
 	{
 		for(var j = 0; j < obj[i].keyWords.length; j++)
@@ -346,18 +381,35 @@ function SearchJSONForKeyWord(obj, keyword)
 	return null;
 }
 
-class Anime{
-	
-	constructor(title, keyWords, image, traducere, verificare, typesetting, encode, episod, lastUpdate)
+class Project{
+	constructor(title, keyWords, image, traducere, verificare, typesetting, encode, episod, lastUpdate, type)
 	{
 		this.title = title;
 		this.keyWords = keyWords;
 		this.image = image;
 		this.episod = episod;
+		this.lastUpdate = lastUpdate;
+		this.type = type;
+	}
+}
+
+class Anime extends Project{
+	constructor(traducere, verificare, typesetting, encode)
+	{
+		super();
 		this.traducere = traducere;
 		this.verificare = verificare;
 		this.typesetting = typesetting;
 		this.encode = encode;
-		this.lastUpdate = lastUpdate;
 	}
+}
+
+class Manga extends Project{
+	constructor(traducere, verificare, editare)
+	{
+		super();
+		this.traducere = traducere;
+		this.verificare = verificare;
+		this.editare = editare;
+	}	
 }
