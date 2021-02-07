@@ -23,6 +23,21 @@ const prefix = '--';
 client.on('ready', () => {
 	mainChannel = client.guilds.cache.get(mainServerID).channels.resolve(mainChannelID);
 	refreshJSON();
+
+	//This only really needs to run once to update the json with the series type, but shhhh
+	//It classifies existing projects as manga and anime. It's useful for those that have been created before the manga update
+	for(let project of onGoingSeries)
+	{
+		if(project.type == null)
+		{
+			if(project.encode != null)
+				project.type = "anime";
+			else if(project.editare != null)
+				project.type = "manga";
+		}
+	}
+
+	fs.writeFileSync('anime.json', JSON.stringify(onGoingSeries, null, 4));
 });
 
 client.on('message', msg => {
@@ -56,7 +71,7 @@ client.on('message', msg => {
 		series.typesetting = 0;
 		series.encode = 0;
 		series.episod = args[1];
-		fs.writeFileSync('anime.json', onGoingSeries);
+		fs.writeFileSync('anime.json', JSON.stringify(onGoingSeries, null, 4));
 	}
 	else if(command == "refresh")
 	{
@@ -161,9 +176,9 @@ client.on('message', msg => {
 
 		args[1] = args[1].replace(/---/g, " ");
 
-		for(let anime of onGoingSeries)
+		for(let project of onGoingSeries)
 		{
-			if(anime.title == args[1])
+			if(project.title == args[1])
 				{
 					msg.reply(" seria " + args[1] + " este deja adăugată");
 					msg.react('❌'); return; 
