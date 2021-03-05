@@ -69,6 +69,8 @@ client.on('message', msg => {
 		series.verificare = 0;
 		series.typesetting = 0;
 		series.encode = 0;
+		series.editare = 0;
+		series.qc = 0;
 		series.episod = args[1];
 		fs.writeFileSync('anime.json', JSON.stringify(onGoingSeries, null, 4));
 	}
@@ -248,7 +250,7 @@ client.on('message', msg => {
 		{
 			series.traducere = 0;
 			series.verificare = 0;
-			series.encoding = 0;
+			series.encode = 0;
 			series.typesetting = 0;
 		}
 		else if(series.type == "manga")
