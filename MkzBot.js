@@ -11,6 +11,8 @@ const mainChannelID = "745231871905890374";
 //const mainServerID = "595184419950559233";
 //const mainChannelID = "595184420382834688";
 
+
+
 var mainChannel;
 
 client.login(token);
@@ -21,6 +23,21 @@ const prefix = '--';
 client.on('ready', () => {
 	mainChannel = client.guilds.cache.get(mainServerID).channels.resolve(mainChannelID);
 	refreshJSON();
+
+	//This only really needs to run once to update the json with the series type, but shhhh
+	//It classifies existing projects as manga and anime. It's useful for those that have been created before the manga update
+	for(let project of onGoingSeries)
+	{
+		if(project.type == null)
+		{
+			if(project.encode != null)
+				project.type = "anime";
+			else if(project.editare != null)
+				project.type = "manga";
+		}
+	}
+
+	fs.writeFileSync('anime.json', JSON.stringify(onGoingSeries, null, 4));
 });
 
 client.on('message', msg => {
@@ -30,7 +47,6 @@ client.on('message', msg => {
 
 	const args = msg.content.slice(prefix.length).trim().split(' ');
 	const command = args.shift().toLowerCase();
-
 	if(command == "start")
 	{
 		let series = SearchJSONForKeyWord(onGoingSeries, args);
@@ -54,7 +70,7 @@ client.on('message', msg => {
 		series.typesetting = 0;
 		series.encode = 0;
 		series.episod = args[1];
-		fs.writeFileSync('anime.json', onGoingSeries);
+		fs.writeFileSync('anime.json', JSON.stringify(onGoingSeries, null, 4));
 	}
 	else if(command == "refresh")
 	{
@@ -70,10 +86,13 @@ client.on('message', msg => {
 	{
 		
 		let embedColor = [150, 0, 255];
-		if(	!(checkPermission(msg.member, 'Traducător')) 	&& args[1] == "traducere"
-		|| 	!(checkPermission(msg.member, 'Verificator')) 	&& args[1] == "verificare"
-		||	!(checkPermission(msg.member, 'Typesetter')) 	&& args[1] == "typesetting"
-		||	!(checkPermission(msg.member, 'Encoder')) 		&& args[1] == "encode"
+		if(	!(checkPermission(msg.member, 'Traducător')) 		&& args[1] == "traducere"
+		|| 	!(checkPermission(msg.member, 'Verificator')) 		&& args[1] == "verificare"
+		||	!(checkPermission(msg.member, 'Typesetter')) 		&& args[1] == "typesetting"
+		||	!(checkPermission(msg.member, 'Encoder')) 			&& args[1] == "encode"
+		||  !(checkPermission(msg.member, 'Editor'))        	&& args[1] == "editare"  
+		||  !(checkPermission(msg.member, 'Timer'))        		&& args[1] == "timing"  
+		||  !(checkPermission(msg.member, 'Quality Checker')) 	&& args[1] == "qc"  
 	  	)
 		{
 			msg.reply(" nu ai permisiunile necesare pentru a folosi comanda");
@@ -88,7 +107,10 @@ client.on('message', msg => {
 		if(args[1] != "traducere"
 		&& args[1] != "verificare"
 		&& args[1] != "typesetting"
-		&& args[1] != "encode")
+		&& args[1] != "encode"
+		&& args[1] != "editare"
+		&& args[1] != "timing"
+		&& args[1] != "qc")
 			{
 				msg.reply(" rolul specificat nu a fost găsit");
 				msg.react('❌'); return; 
@@ -110,14 +132,40 @@ client.on('message', msg => {
 			}
 		else if(args[2] != null) 
 			msg.reply(" argumentul \„" + args[2] + "\” nu este recunoscut");
-		switch(args[1])
+		
+		if(series.type == "anime")
+			switch(args[1])
+			{
+				case 'traducere': series.traducere = valoareViitoare; break;
+				case 'verificare': series.verificare = valoareViitoare; break;
+				case 'typesetting': series.typesetting = valoareViitoare; break;
+				case 'encode': series.encode = valoareViitoare; break;
+				case 'qc': if(series.qcEnabled) {series.qc = valoareViitoare; break;}
+				default: msg.reply("nu prea merge la seria asta, boss..."); msg.react('❌'); return;
+			}
+		else if(series.type == "manga")
 		{
-			case 'traducere': series.traducere = valoareViitoare; break;
-			case 'verificare': series.verificare = valoareViitoare; break;
-			case 'typesetting': series.typesetting = valoareViitoare; break;
-			case 'encode': series.encode = valoareViitoare; break;
-		}
+			switch(args[1])
+			{
 
+				case 'traducere': series.traducere = valoareViitoare; break;
+				case 'verificare': series.verificare = valoareViitoare; break;
+				case 'editare': series.editare = valoareViitoare; break;
+				case 'qc': if(series.qcEnabled) {series.qc = valoareViitoare; break;}
+				default: msg.reply("nu prea merge la seria asta, boss..."); msg.react('❌'); return;
+			}
+		}
+		else if(series.type == "bd")
+		{
+			switch(args[1])
+			{
+				case 'timing': series.timing = valoareViitoare; break;
+				case 'typesetting': series.typesetting = valoareViitoare; break;
+				case 'encode': series.encode = valoareViitoare; break;
+				case 'qc': series.qc = valoareViitoare; break;
+				default: msg.reply("nu prea merge la seria asta, boss..."); msg.react('❌'); return;
+			}
+		}
 		series.lastUpdate = new Date();
 		showProgres(msg, args, mainChannel, embedColor);
 		fs.writeFileSync('anime.json', JSON.stringify(onGoingSeries, null, 4));
@@ -126,43 +174,48 @@ client.on('message', msg => {
 	{
 		let embedColor = [150, 0, 255];
 		showProgres(msg, args, msg.channel, embedColor);
-		return;
-		
+		return;	
 	}
 	else if(command == "add")
 	{
+		args[0] = args[0].toLowerCase();
 		if(	!(checkPermission(msg.member, 'Tăticii mari') || checkPermission(msg.member, 'Administrator🌟') || checkPermission(msg.member,'Tăticul mic')))
 		{
 			msg.reply(" nu ai permisiunile necesare pentru a folosi comanda");
 			msg.react('❌'); return; 
 		}
-		if(args[0] == null)
+		if(args[0] != "anime" && args[0] != "manga" && args[0] != "bd")
+		{
+			msg.reply(" trebuie să specifici dacă seria e anime, manga sau BD");
+			return;
+		}
+		if(args[1] == null)
 		{
 			msg.reply(" trebuie să specifici un titlu pentru serie");
 			msg.react('❌'); return; 
 		}
-		if(args[1] == null)
+		if(args[2] == null)
 		{
 			msg.reply(" trebuie să specifici un link pentru thumbnail-ul seriei");
 			msg.react('❌'); return; 
 		}
-		if(args[2] == null)
+		if(args[3] == null)
 		{
 			msg.reply(" trebuie să specifici măcar un cuvânt cheie cu care să poată fi identificată seria");
 			msg.react('❌'); return; 
 		}
 
-		args[0] = args[0].replace(/---/g, " ");
+		args[1] = args[1].replace(/---/g, " ");
 
-		for(let anime of onGoingSeries)
+		for(let project of onGoingSeries)
 		{
-			if(anime.title == args[0])
+			if(project.title == args[1])
 				{
-					msg.reply(" seria " + args[0] + " este deja adăugată");
+					msg.reply(" seria " + args[1] + " este deja adăugată");
 					msg.react('❌'); return; 
 				}
 		}
-		let anime = new Anime();
+		
 		let keyWords = new Array();
 		let i = 2;
 		while(args[i] != null)
@@ -170,20 +223,52 @@ client.on('message', msg => {
 			keyWords.push(args[i++].toLowerCase());
 		}
 
-		anime.title = args[0];
-		anime.image = args[1];
-		anime.episod = "01";
-		anime.keyWords = keyWords;
-		anime.traducere = 0;
-		anime.verificare = 0;
-		anime.encoding = 0;
-		anime.typesetting = 0;
-		anime.lastUpdate = new Date();
-		onGoingSeries.push(anime);
+		let series;
+		if(args[0] == "anime")
+		{	
+			series = new Anime();
+		}
+		else if(args[0] == "manga")
+		{
+			series = new Manga();
+		}
+		else if(args[0] == "bd")
+		{
+			args[1] += " (BD)";
+			series = new BD();
+		}
+		series.type = args[0];
+		series.title = args[1];
+		series.image = args[2];
+		series.episod = "01";
+		series.keyWords = keyWords;
+		series.lastUpdate = new Date();
+		
+		if(series.type == "anime")
+		{
+			series.traducere = 0;
+			series.verificare = 0;
+			series.encoding = 0;
+			series.typesetting = 0;
+		}
+		else if(series.type == "manga")
+		{
+			series.traducere = 0;
+			series.verificare = 0;
+			series.editare = 0;
+		}
+		else if(series.type == "bd")
+		{
+			series.timing = 0;
+			series.typesetting = 0;
+			series.encode = 0;
+			series.qc = 0;
+		}
+		onGoingSeries.push(series);
 		fs.writeFileSync('anime.json', JSON.stringify(onGoingSeries, null, 4));
 		refreshJSON();
 		
-		msg.reply(" seria " + anime.title + " a fost adăugată");
+		msg.reply(" seria " + series.title + " a fost adăugată");
 	}	
 	else if(command == "drop")
 	{
@@ -221,6 +306,7 @@ client.on('message', msg => {
 	}
 	else if(command == "edit")
 	{
+		args[0] = args[0].toLowerCase();
 		if(	!(checkPermission(msg.member, 'Tăticii mari') || checkPermission(msg.member, 'Administrator🌟') || checkPermission(msg.member,'Tăticul mic')))
 		{
 			msg.reply(" nu ai permisiunile necesare pentru a folosi comanda");
@@ -273,12 +359,50 @@ client.on('message', msg => {
 			
 				{name: "Comenzile disponibile utilizatorilor", value: prefix + "progres [nume serie] (Afișează starea episodului curent din seria dată)"},
 				{name: "Comenzile disponibile membrilor echipei", value: prefix + "update [nume serie] [etapa procesului de traducere] [(opțional) \"-not\"] (actualizează starea procesului de traducere)"},
-				{name: "Comenzile disponibile administratorilor", value: prefix + "start [nume serie] [număr / nume episod] (începe traducerea unui episod)\n" + prefix +"add [nume serie] [URL pentru thumbnail-ul seriei] [lista de cuvinte cheie a seriei] (adaugă o serie nouă pe baza parametrilor)\n" + prefix +"drop [nume serie] (înlatură o serie din lista bot-ului)\n" + prefix + "edit [nume serie] [proprietatea care trebuie editată] [noua valoare a proprietății] (editează una dintre proprietățile unei serii)"}
+				{name: "Comenzile disponibile administratorilor", value: prefix + "start [nume serie] [număr / nume episod] (începe traducerea unui episod)\n" + prefix + "add [tip serie: anime/manga/BD][nume serie] [URL pentru thumbnail-ul seriei] [lista de cuvinte cheie a seriei] (adaugă o serie nouă pe baza parametrilor)\n" + prefix +"drop [nume serie] (înlatură o serie din lista bot-ului)\n" + prefix + "edit [nume serie] [proprietatea care trebuie editată] [noua valoare a proprietății] (editează una dintre proprietățile unei serii)\n" + prefix + "setqc [nume serie] [true/false] (activeaza/dezactiveaza Quality Check-ul pentru seria respectiva)\n"}
 		)
 		.setTimestamp();
 
 		msg.channel.send(helpEmbed);
-	} else return;
+	} 
+	else if(command == "setqc")
+	{
+		if(	!(checkPermission(msg.member, 'Tăticii mari') || checkPermission(msg.member, 'Administrator🌟') || checkPermission(msg.member,'Tăticul mic')))
+		{
+			msg.reply("nu ai permisiunile necesare pentru a folosi comanda");
+			msg.react('❌'); return; 
+		}
+
+		let series = SearchJSONForKeyWord(onGoingSeries, args[0]);
+
+		if(series.type == "bd")
+		{
+			msg.reply("nu prea merge la seria asta, boss..."); 
+			msg.react('❌'); return;
+		}
+
+		if(series == null) 
+		{
+			msg.reply("seria nu a fost gasită");
+			msg.react('❌'); return; 
+		}
+
+		if(args[1] != "true" && args[1] != "false")
+		{
+			msg.reply("Al doilea argument trebuie sa fie true/false");
+			msg.react('❌'); return;	
+		}
+		
+		if(args[1] == "true")
+			series.qcEnabled = true;
+		else if(args[1] == "false")
+			{
+				series.qc = 0;
+				series.qcEnabled = false;
+			}
+		
+	}
+	else return;
 	
 	msg.react('✅');
 });
@@ -305,17 +429,36 @@ function showProgres(msg, args, chan, color)
 			msg.react('❌'); return; 
 		}
 		
-
 		const exampleEmbed = new Discord.MessageEmbed()
 		.setColor(color)
 		.setTitle(series.title + ' #' + series.episod)
-		.addFields(
-			{ name: 'Progres', value: boolToStrikeThrough(series.traducere, "Traducere") + ' \n' + boolToStrikeThrough(series.verificare, "Verificare") + ' \n' + boolToStrikeThrough(series.typesetting, "Typesetting") + ' \n' + boolToStrikeThrough(series.encode, "Encode")},
-		)
-
 		.setThumbnail(series.image)
 		.setTimestamp(series.lastUpdate);
 
+		let qcField = "";
+		if(series.qcEnabled)
+			qcField = boolToStrikeThrough(series.qc, "\nQuality Check");
+		if(series.type == "anime")
+		{
+			exampleEmbed.addFields(
+				{ 
+					name: 'Progres', value: boolToStrikeThrough(series.traducere, "Traducere") + ' \n' + boolToStrikeThrough(series.verificare, "Verificare") + ' \n' + boolToStrikeThrough(series.typesetting, "Typesetting") + ' \n' + boolToStrikeThrough(series.encode, "Encode") + qcField
+				});
+		}
+		else if(series.type == "manga")
+		{
+			exampleEmbed.addFields(
+				{ 
+					name: 'Progres', value: boolToStrikeThrough(series.traducere, "Traducere") + ' \n' + boolToStrikeThrough(series.verificare, "Verificare") + ' \n' + boolToStrikeThrough(series.editare, "Editare") + qcField
+				});
+		}
+		else if(series.type == "bd")
+		{
+			exampleEmbed.addFields(
+				{ 
+					name: 'Progres', value: boolToStrikeThrough(series.timing, "Timing") + ' \n' + boolToStrikeThrough(series.typesetting, "Typesetting") + ' \n' + boolToStrikeThrough(series.encode, "Encode") + ' \n' + boolToStrikeThrough(series.qc, "Quality Check")
+				});
+		}	
 		chan.send(exampleEmbed);
 		msg.react('✅');
 }
@@ -331,7 +474,6 @@ function boolToStrikeThrough(value, text)
 
 function SearchJSONForKeyWord(obj, keyword)
 {
-	let series = new Anime();
 	for(var i = 0; i < obj.length; i++)
 	{
 		for(var j = 0; j < obj[i].keyWords.length; j++)
@@ -346,18 +488,50 @@ function SearchJSONForKeyWord(obj, keyword)
 	return null;
 }
 
-class Anime{
-	
-	constructor(title, keyWords, image, traducere, verificare, typesetting, encode, episod, lastUpdate)
+class Project{
+	constructor(title, keyWords, image, traducere, verificare, typesetting, encode, episod, lastUpdate, type)
 	{
 		this.title = title;
 		this.keyWords = keyWords;
 		this.image = image;
 		this.episod = episod;
+		this.lastUpdate = lastUpdate;
+		this.type = type;
+	}
+}
+
+class Anime extends Project{
+	constructor(traducere, verificare, typesetting, encode, qc)
+	{
+		super();
 		this.traducere = traducere;
 		this.verificare = verificare;
 		this.typesetting = typesetting;
 		this.encode = encode;
-		this.lastUpdate = lastUpdate;
+		this.qc = qc;
+		this.qcEnabled = false;
+	}
+}
+
+class Manga extends Project{
+	constructor(traducere, verificare, editare, qc)
+	{
+		super();
+		this.traducere = traducere;
+		this.verificare = verificare;
+		this.editare = editare;
+		this.qc = qc;
+		this.qcEnabled = false;
+	}	
+}
+
+class BD extends Project{
+	constructor(timing, typesetting, encode, qc)
+	{
+		super();
+		this.timing = timing;
+		this.typesetting = typesetting;
+		this.encode = encode;
+		this.qc = qc;
 	}
 }
