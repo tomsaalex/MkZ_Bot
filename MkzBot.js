@@ -4,14 +4,15 @@ const fs = require('fs');
 const { token } = require("./token.json");
 
 //ID-uri Cenaclu
-const mainServerID = "313373031022198786";
-const mainChannelID = "745231871905890374";
+//const mainServerID = "313373031022198786";
+//const mainChannelID = "745231871905890374";
 
 //ID-uri Sinod
 //const mainServerID = "595184419950559233";
 //const mainChannelID = "595184420382834688";
 
-
+const mainServerID = "386166486634463239";
+const mainChannelID = "386166486634463244";
 
 var mainChannel;
 
