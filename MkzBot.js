@@ -309,7 +309,6 @@ client.on('message', msg => {
 	}
 	else if(command == "edit")
 	{
-		args[0] = args[0].toLowerCase();
 		if(	!(checkPermission(msg.member, 'Tăticii mari') || checkPermission(msg.member, 'Administrator🌟') || checkPermission(msg.member,'Tăticul mic')))
 		{
 			msg.reply(" nu ai permisiunile necesare pentru a folosi comanda");
@@ -320,6 +319,9 @@ client.on('message', msg => {
 			msg.reply(" nu ai specificat o serie");
 			msg.react('❌'); return; 
 		}
+
+		args[0] = args[0].toLowerCase();
+
 		let series = SearchJSONForKeyWord(onGoingSeries, args[0]);
 		if(series == null)
 		{
