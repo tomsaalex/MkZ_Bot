@@ -94,7 +94,7 @@ client.on('message', msg => {
 		||	!(checkPermission(msg.member, 'Encoder')) 			&& args[1] == "encode"
 		||  !(checkPermission(msg.member, 'Editor'))        	&& args[1] == "editare"  
 		||  !(checkPermission(msg.member, 'Timer'))        		&& args[1] == "timing"  
-		||  !(checkPermission(msg.member, 'Quality Checker')) 	&& args[1] == "qc"  
+		||  !(checkPermission(msg.member, 'Quality Checker')) 	&& args[1] == "qc"    
 	  	)
 		{
 			msg.reply(" nu ai permisiunile necesare pentru a folosi comanda");
@@ -143,6 +143,7 @@ client.on('message', msg => {
 				case 'typesetting': series.typesetting = valoareViitoare; break;
 				case 'encode': series.encode = valoareViitoare; break;
 				case 'qc': if(series.qcEnabled) {series.qc = valoareViitoare; break;}
+				case 'timing': if(series.timingEnabled) {series.timing = valoareViitoare; break;}
 				default: msg.reply("nu prea merge la seria asta, boss..."); msg.react('❌'); return;
 			}
 		else if(series.type == "manga")
@@ -377,16 +378,17 @@ client.on('message', msg => {
 
 		let series = SearchJSONForKeyWord(onGoingSeries, args[0]);
 
-		if(series.type == "bd")
-		{
-			msg.reply("nu prea merge la seria asta, boss..."); 
-			msg.react('❌'); return;
-		}
 
 		if(series == null) 
 		{
 			msg.reply("seria nu a fost gasită");
 			msg.react('❌'); return; 
+		}
+
+		if(series.type == "bd")
+		{
+			msg.reply("nu prea merge la seria asta, boss..."); 
+			msg.react('❌'); return;
 		}
 
 		if(args[1] != "true" && args[1] != "false")
@@ -401,6 +403,45 @@ client.on('message', msg => {
 			{
 				series.qc = 0;
 				series.qcEnabled = false;
+			}
+		
+	}
+	else if(command == "settiming")
+	{
+		if(	!(checkPermission(msg.member, 'Tăticii mari') || checkPermission(msg.member, 'Administrator🌟') || checkPermission(msg.member,'Tăticul mic')))
+		{
+			msg.reply("nu ai permisiunile necesare pentru a folosi comanda");
+			msg.react('❌'); return; 
+		}
+
+		let series = SearchJSONForKeyWord(onGoingSeries, args[0]);
+
+
+		if(series == null) 
+		{
+			msg.reply("seria nu a fost gasită");
+			msg.react('❌'); return; 
+		}
+		
+		if(series.type == "bd" || series.type == "manga")
+		{
+			msg.reply("nu prea merge la seria asta, boss..."); 
+			msg.react('❌'); return;
+		}
+
+
+		if(args[1] != "true" && args[1] != "false")
+		{
+			msg.reply("Al doilea argument trebuie sa fie true/false");
+			msg.react('❌'); return;	
+		}
+		
+		if(args[1] == "true")
+			series.timingEnabled = true;
+		else if(args[1] == "false")
+			{
+				series.timing = 0;
+				series.timingEnabled = false;
 			}
 		
 	}
@@ -438,13 +479,17 @@ function showProgres(msg, args, chan, color)
 		.setTimestamp(series.lastUpdate);
 
 		let qcField = "";
+		let timingField = "";
 		if(series.qcEnabled)
 			qcField = boolToStrikeThrough(series.qc, "\nQuality Check");
+		
+		if(series.timingEnabled)
+			timingField = boolToStrikeThrough(series.timing, "\nTiming");
 		if(series.type == "anime")
 		{
 			exampleEmbed.addFields(
 				{ 
-					name: 'Progres', value: boolToStrikeThrough(series.traducere, "Traducere") + ' \n' + boolToStrikeThrough(series.verificare, "Verificare") + ' \n' + boolToStrikeThrough(series.typesetting, "Typesetting") + ' \n' + boolToStrikeThrough(series.encode, "Encode") + qcField
+					name: 'Progres', value: boolToStrikeThrough(series.traducere, "Traducere") + ' \n' + boolToStrikeThrough(series.verificare, "Verificare") + ' \n' + boolToStrikeThrough(series.typesetting, "Typesetting") + ' \n' + boolToStrikeThrough(series.encode, "Encode") + timingField + qcField
 				});
 		}
 		else if(series.type == "manga")
@@ -503,7 +548,7 @@ class Project{
 }
 
 class Anime extends Project{
-	constructor(traducere, verificare, typesetting, encode, qc)
+	constructor(traducere, verificare, typesetting, encode, qc, timing)
 	{
 		super();
 		this.traducere = traducere;
@@ -512,6 +557,8 @@ class Anime extends Project{
 		this.encode = encode;
 		this.qc = qc;
 		this.qcEnabled = false;
+		this.timing = timing;
+		this.timingEnabled = false;
 	}
 }
 
