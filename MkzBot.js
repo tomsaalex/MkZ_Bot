@@ -484,10 +484,10 @@ function showProgres(msg, args, chan, color)
 		let qcField = "";
 		let timingField = "";
 		if(series.qcEnabled)
-			qcField = boolToStrikeThrough(series.qc, "\nQuality Check");
+			qcField = "\n" + boolToStrikeThrough(series.qc, "Quality Check");
 		
 		if(series.timingEnabled)
-			timingField = boolToStrikeThrough(series.timing, "\nTiming");
+			timingField = "\n" + boolToStrikeThrough(series.timing, "\nTiming");
 		if(series.type == "anime")
 		{
 			exampleEmbed.addFields(
