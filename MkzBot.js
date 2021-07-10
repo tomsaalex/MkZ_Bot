@@ -4,14 +4,14 @@ const fs = require('fs');
 const { token } = require("./token.json");
 
 //ID-uri Cenaclu
-const mainServerID = "313373031022198786";
-const mainChannelID = "745231871905890374";
+const cenacluServerID = "313373031022198786";
+const cenacluChannelID = "745231871905890374";
 
 //ID-uri Sinod
-//const mainServerID = "595184419950559233";
-//const mainChannelID = "595184420382834688";
+const sinodServerID = "595184419950559233";
+const sinodChannelID = "595184420382834688";
 
-var mainChannel;
+var mainChannel, sinodChannel;
 
 client.login(token);
 
@@ -19,7 +19,9 @@ var text, onGoingSeries;
 const prefix = '--';
 
 client.on('ready', () => {
-	mainChannel = client.guilds.cache.get(mainServerID).channels.resolve(mainChannelID);
+	mainChannel = client.guilds.cache.get(cenacluServerID).channels.resolve(cenacluChannelID);
+	sinodChannelID = client.guilds.cache.get(sinodServerID).channels.resolve(sinodChannelID);
+
 	refreshJSON();
 
 	//This only really needs to run once to update the json with the series type, but shhhh
@@ -36,6 +38,7 @@ client.on('ready', () => {
 	}
 
 	fs.writeFileSync('anime.json', JSON.stringify(onGoingSeries, null, 4));
+	sinodChannel.send("Ad astra abyssoque. Welcome to the MkZ Family.");
 });
 
 client.on('message', msg => {
