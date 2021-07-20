@@ -20,7 +20,7 @@ const prefix = '--';
 
 client.on('ready', () => {
 	mainChannel = client.guilds.cache.get(cenacluServerID).channels.resolve(cenacluChannelID);
-	sinodChannelID = client.guilds.cache.get(sinodServerID).channels.resolve(sinodChannelID);
+	sinodChannel = client.guilds.cache.get(sinodServerID).channels.resolve(sinodChannelID);
 
 	refreshJSON();
 
