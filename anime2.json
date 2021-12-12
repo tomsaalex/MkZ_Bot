@@ -1,0 +1,64 @@
+[
+    {
+        "title": "Shaman King (2021)",
+        "keyWords": [
+            "https://cdn.myanimelist.net/images/anime/1416/113270.jpg",
+            "shaman",
+            "king",
+            "regele",
+            "shaman",
+            "saman",
+            "2021"
+        ],
+        "image": "https://cdn.myanimelist.net/images/anime/1416/113270.jpg",
+        "episod": "01",
+        "lastUpdate": "2021-04-08T22:14:51.962Z",
+        "type": "anime",
+        "traducere": 0,
+        "verificare": 0,
+        "typesetting": 0,
+        "encode": 0,
+        "qcEnabled": true,
+        "timingEnabled": false,
+        "qc": 1
+    },
+    {
+        "title": "Komi wa, Comyushou desu.",
+        "keyWords": [
+            "https://cdn.myanimelist.net/images/anime/1943/114875.jpg",
+            "komi",
+            "wa",
+            "comyushou",
+            "komi",
+            "can't",
+            "communicate"
+        ],
+        "image": "https://cdn.myanimelist.net/images/anime/1943/114875.jpg",
+        "episod": "01",
+        "lastUpdate": "2021-07-15T17:13:43.947Z",
+        "type": "anime",
+        "traducere": 0,
+        "verificare": 0,
+        "typesetting": 0,
+        "encode": 0,
+        "qcEnabled": false,
+        "timingEnabled": false
+    },
+    {
+        "title": "K-Project (BD)",
+        "keyWords": [
+            "https://cdn.myanimelist.net/images/anime/3/47607.jpg",
+            "k",
+            "project",
+            "k-project"
+        ],
+        "image": "https://cdn.myanimelist.net/images/anime/3/47607.jpg",
+        "episod": "01",
+        "lastUpdate": "2021-07-15T17:14:05.237Z",
+        "type": "bd",
+        "timing": 0,
+        "typesetting": 0,
+        "encode": 0,
+        "qc": 0
+    }
+]

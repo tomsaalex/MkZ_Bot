@@ -87,5 +87,8 @@
       "resolved": "https://registry.npmjs.org/ws/-/ws-7.3.1.tgz",
       "version": "7.3.1"
     }
+  },
+  "devDependencies": {
+    "eslint": "^8.4.1"
   }
 }
