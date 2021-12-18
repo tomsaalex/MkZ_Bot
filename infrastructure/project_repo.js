@@ -1,10 +1,38 @@
 const fs = require('fs');
+const mysql = require('mysql')
+const RepositoryError = require('../exceptions/repository_error').RepositoryError
 
 class RepoProjects{
-	constructor(file_path)
+	constructor(host, user, password, database)
 	{
-		this.file_path = file_path;
 		this.projects = [];
+
+		this.con = mysql.createConnection({
+			host: host,
+			user: user,
+			password: password,
+			database: database
+		});
+		  
+		con.connect(function(err) {
+			if (err) throw err;
+			console.log("Connected!");
+			/*var sql = "INSERT INTO episodes (title_id) VALUES ('1')";
+			con.query(sql, function (err, result) {
+			  if (err) throw err;
+			  console.log("1 record inserted");
+			});*/	
+		});
+	}
+
+	Connect()
+	{
+		
+		this.con.connect(function(err) {
+			if (err) throw err;
+			console.log("Connected!");
+			
+		});
 	}
 
 	GetAll()
@@ -22,6 +50,20 @@ class RepoProjects{
 	AppendToFile()
 	{
 		fs.writeFileSync(this.file_path, JSON.stringify(onGoingSeries, null, 4));
+	}
+
+	GetProjectByKeyWord(keyWord)
+	{
+		for(var i = 0; i < this.projects.length; i++)
+		{
+			let _proj = this.projects[i];
+			for(var j = 0; j < _proj.keyWords.length; j ++)
+				if (keyWord == _proj.keyWords[j])
+					return _proj;
+		}
+
+		throw RepositoryError("Proiect inexistent!")
+			
 	}
 
 }

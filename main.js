@@ -26,7 +26,7 @@ client.login(token);
 var text, onGoingSeries;
 const prefix = '--';
 
-let repoProject = new RepoProjects("./anime.json");
+let repoProject = new RepoProjects("localhost", "root", "", "mkzbot");
 let projectController = new ServiceProject(repoProject);
 let ui = new UI(projectController);
 

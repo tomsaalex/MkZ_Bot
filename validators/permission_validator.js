@@ -1,3 +1,5 @@
+const PermissionError = require('../exceptions/permission_error.js').PermissionError
+
 class PermissionValidator{
 	static ValidateUserPermissions(user, permission_level){
 		var hasPermission = true
@@ -7,11 +9,12 @@ class PermissionValidator{
 
 		if (permission_level == "administrator")
 		{
+			console.log("Got in.")
 			for (let _role in adminPermissionRoles)
 				if (this.CheckRole(user, _role) == true)
 					return true;
 
-			return false;
+			throw PermissionError("Permisiuni insuficiente!");
 		}
 	}
 

@@ -62,6 +62,7 @@
       "resolved": "https://registry.npmjs.org/mime-types/-/mime-types-2.1.27.tgz",
       "version": "2.1.27"
     },
+    "mysql": "github:mysqljs/mysql",
     "node-fetch": {
       "integrity": "sha512-8dG4H5ujfvFiqDmVu9fQ5bOHUC15JMjMY/Zumv26oOvvVJjM67KF8koCWIabKQ1GJIa9r2mMZscBq/TbdOcmNA==",
       "resolved": "https://registry.npmjs.org/node-fetch/-/node-fetch-2.6.0.tgz",

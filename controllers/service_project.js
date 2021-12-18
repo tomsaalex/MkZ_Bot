@@ -8,9 +8,16 @@ class ServiceProject{
 	}
 
 	StartCommand(msg, args){
-		//if(!PermissionValidator.ValidateUserPermissions(msg.member, "administrator"))
-		//	throw new PermissionError("InsufficientPermissions")
-		console.log(this.repo_project.GetAll())
+		//start: --start [keyWord serie] [număr / nume episod] (începe traducerea unui episod)
+		PermissionValidator.ValidateUserPermissions(msg.member, "administrator");
+		
+		if (args[2] == null)
+			throw Error("")
+
+		let project = this.repo_project.GetProjectByKeyWord(args[0]);
+
+
+		
 	}
 }
 

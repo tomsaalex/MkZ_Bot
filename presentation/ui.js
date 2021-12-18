@@ -1,3 +1,6 @@
+const { PermissionError } = require("../exceptions/permission_error");
+const { RepositoryError } = require("../exceptions/repository_error");
+
 class UI{
 	constructor(projectController, client)
 	{
@@ -19,7 +22,17 @@ class UI{
 
 		if(command == "start")
 		{
-			this.projectController.StartCommand(msg, args);
+			try
+			{
+				this.projectController.StartCommand(msg, args);
+			}catch(error)
+			{
+				if (error instanceof PermissionError)
+					msg.reply(", nu ai permisiunile necesare pentru aceata comanda.");
+				else if(error instanceof RepositoryError)
+					msg.reply(", seria nu exista.");
+				msg.react('❌'); return; 
+			}
 		}
 		else if(command == "update")
 		{
