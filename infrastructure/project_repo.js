@@ -3,18 +3,20 @@ const mysql = require('mysql')
 const RepositoryError = require('../exceptions/repository_error').RepositoryError
 
 class RepoProjects{
+	#projects;
+	#con;
 	constructor(host, user, password, database)
 	{
-		this.projects = [];
+		this.#projects = [];
 
-		this.con = mysql.createConnection({
+		this.#con = mysql.createConnection({
 			host: host,
 			user: user,
 			password: password,
 			database: database
 		});
 		  
-		con.connect(function(err) {
+		this.#con.connect(function(err) {
 			if (err) throw err;
 			console.log("Connected!");
 			/*var sql = "INSERT INTO episodes (title_id) VALUES ('1')";
@@ -33,6 +35,15 @@ class RepoProjects{
 			console.log("Connected!");
 			
 		});
+	}
+
+	AddProject(project)
+	{
+		for(let _proj of this.#projects)
+			if(_proj.title == project.title)
+				throw RepositoryError("exista deja o serie cu acelasi titlu.");
+		
+		this.#projects.append(project);
 	}
 
 	GetAll()
