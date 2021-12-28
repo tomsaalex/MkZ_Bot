@@ -43,7 +43,7 @@ class RepoProjects{
 			if(_proj.title == project.title)
 				throw RepositoryError("exista deja o serie cu acelasi titlu.");
 		
-		this.#projects.append(project);
+		this.#projects.push(project);
 	}
 
 	GetAll()

@@ -57,10 +57,7 @@ class UI {
 				else if (error instanceof MissingArgumentError) {
 					msg.reply("urmatoarele argumente lipsesc din comanda:\n" + error.message);
 				}
-				else if(error)
-				{
-					msg.reply("ceva s-a stricat pe undeva.\n" + error.message);
-				}
+				console.log(error);
 				msg.react('❌'); return;
 			}
 		}

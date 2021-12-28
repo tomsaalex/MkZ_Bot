@@ -2,6 +2,7 @@ const { PermissionValidator } = require('../validators/permission_validator');
 const { PermissionError } = require('../exceptions/permission_error');
 const { ProjectType } = require('../domain/entity_project_type');
 const { MissingArgumentError } = require('../exceptions/missing_argument_error');
+const { Project } = require('../domain/entity_project');
 
 class ServiceProject {
 	constructor(repo_project) {

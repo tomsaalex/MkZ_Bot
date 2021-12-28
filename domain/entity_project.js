@@ -1,36 +1,36 @@
 class Project{
     constructor(title, keyWords, cover, episodesNum, type)
     {
-        this.title = title;
-        this.keyWords = keyWords;
-        this.cover = cover;
-        this.episodesNum = episodesNum;
-        this.type = type;
+        this._title = title;
+        this._keyWords = keyWords;
+        this._cover = cover;
+        this._episodesNum = episodesNum;
+        this._type = type;
     }
 
     get title()
     {
-        return this.title;
+        return this._title;
     }
 
     get keyWords()
     {
-        return this.keyWords;
+        return this._keyWords;
     }
 
     get cover()
     {
-        return this.cover;
+        return this._cover;
     }
 
     get episodesNum()
     {
-        return this.episodesNum;
+        return this._episodesNum;
     }
 
     get type()
     {
-        return this.type;
+        return this._type;
     }
 }
 
