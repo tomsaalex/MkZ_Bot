@@ -6,7 +6,7 @@ class ProjectType{
         if (this.allowedTypes.includes(type))
             this.type = type;
         else{
-            throw ProjectTypeError("tip de proiect invalid.");
+            throw new ProjectTypeError("tip de proiect invalid.");
         }
     }
 

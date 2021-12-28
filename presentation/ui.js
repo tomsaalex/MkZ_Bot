@@ -1,17 +1,13 @@
 const { PermissionError } = require("../exceptions/permission_error");
 const { RepositoryError } = require("../exceptions/repository_error");
-const { ProjectTypeError } = require("../exceptions/project_type_error").ProjectTypeError;
-const { MissingArgumentError } = require("../exceptions/missing_argument_error").MissingArgumentError;
+const { ProjectTypeError } = require("../exceptions/project_type_error");
+const { MissingArgumentError } = require("../exceptions/missing_argument_error");
+const { MessageFlags } = require("discord.js");
 
 class UI {
 	constructor(projectController, client) {
 		this.projectController = projectController
 		this.client = client;
-
-		console.log(typeof(MissingArgumentError));
-		console.log(typeof(RepositoryError));
-		console.log(typeof(PermissionError));
-		console.log(typeof(ProjectTypeError));
 	}
 
 	IsValidCommand(msg, prefix) {
@@ -30,11 +26,11 @@ class UI {
 				this.projectController.StartCommand(msg, args);
 			} catch (error) {
 				if (error instanceof PermissionError)
-					msg.reply(", nu ai permisiunile necesare pentru aceata comanda.");
+					msg.reply("nu ai permisiunile necesare pentru aceata comanda.");
 				else if (error instanceof RepositoryError)
-					msg.reply(", seria nu exista.");
+					msg.reply("seria nu exista.");
 				else if (error.message)
-					msg.reply(", " + error.message)
+					msg.reply(error.message);
 				msg.react('❌'); return;
 			}
 		}
@@ -49,21 +45,23 @@ class UI {
 		else if (command == "add") {
 			try {
 				let title = this.projectController.AddCommand(msg, args);
-				msg.reply(", seria " + title + " a fost adaugata cu succes!");
+				msg.reply("seria " + title + " a fost adaugata cu succes!");
 				msg.react('✅');
 			} catch (error) {
 				if (error instanceof PermissionError) {
-					msg.reply(", nu ai permisiunile necesare pentru aceata comanda.");
-					return;
+					msg.reply("nu ai permisiunile necesare pentru aceata comanda.");
 				}
-				if (error instanceof ProjectTypeError) {
-					msg.reply(", tipul de proiect este invalid.")
-					return;
+				else if (error instanceof ProjectTypeError) {
+					msg.reply("tipul de proiect este invalid.")
 				}
-				if (error instanceof MissingArgumentError) {
-					msg.reply(", urmatoarele argumente lipsesc din comanda:\n" + error.message);
-					return;
+				else if (error instanceof MissingArgumentError) {
+					msg.reply("urmatoarele argumente lipsesc din comanda:\n" + error.message);
 				}
+				else if(error)
+				{
+					msg.reply("ceva s-a stricat pe undeva.\n" + error.message);
+				}
+				msg.react('❌'); return;
 			}
 		}
 		else if (command == "drop") {

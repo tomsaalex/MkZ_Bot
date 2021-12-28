@@ -9,12 +9,15 @@ class PermissionValidator{
 
 		if (permission_level == "administrator")
 		{
-			console.log("Got in.")
-			for (let _role in adminPermissionRoles)
+			console.log("Got in.");
+			console.log(this.CheckRole(user, 'Administrator'));
+			for (let _role of adminPermissionRoles)
 				if (this.CheckRole(user, _role) == true)
 					return true;
+				else
+				console.log(user + " " + _role);
 
-			throw PermissionError("Permisiuni insuficiente!");
+			throw new PermissionError("Permisiuni insuficiente!");
 		}
 	}
 

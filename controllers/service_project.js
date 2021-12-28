@@ -1,7 +1,7 @@
-const { PermissionValidator } = require('../validators/permission_validator').PermissionValidator;
-const { PermissionError } = require('../exceptions/permission_error').PermissionError;
-const { ProjectType } = require('../domain/entity_project_type').ProjectType;
-const { MissingArgumentError } = require('../exceptions/missing_argument_error').MissingArgumentError;
+const { PermissionValidator } = require('../validators/permission_validator');
+const { PermissionError } = require('../exceptions/permission_error');
+const { ProjectType } = require('../domain/entity_project_type');
+const { MissingArgumentError } = require('../exceptions/missing_argument_error');
 
 class ServiceProject {
 	constructor(repo_project) {
@@ -25,8 +25,8 @@ class ServiceProject {
 		//--add [tip serie: anime/manga/BD][nume serie] [URL pentru thumbnail-ul seriei] [lista de cuvinte cheie a seriei] (adaugă o serie nouă pe baza parametrilor)
 		PermissionValidator.ValidateUserPermissions(msg.member, "administrator");
 
-		let currentType = new ProjectType(args[0])
-
+		let currentType = new ProjectType(args[0]);
+		
 		let errorString = "";
 
 		if (args[1] == null)
@@ -36,7 +36,7 @@ class ServiceProject {
 		if (args[3] == null)
 			errorString += "keyWord\n";
 		if (errorString.length > 0)
-			throw MissingArgumentError(errorString);
+			throw new MissingArgumentError(errorString);
 
 		args[1] = args[1].replace(/---/g, " ");
 
