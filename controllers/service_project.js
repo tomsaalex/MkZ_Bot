@@ -17,7 +17,10 @@ class ServiceProject {
 		if (args[1] == null)
 			errorString += "episod\n";
 
-		throw MissingArgumentError(errorString);
+		if(errorString.length > 0)
+		{
+			throw MissingArgumentError(errorString);
+		}
 
 		let project = this.repo_project.GetProjectByKeyWord(args[0]);
 	}
@@ -47,8 +50,8 @@ class ServiceProject {
 		while (args[i] != null) {
 			keyWords.push(args[i++].toLowerCase());
 		}
-
-		let project = new Project(args[1], keyWords, args[2], null, currentType);
+		project_id = this.repo_project.GetNextID();
+		let project = new Project(project_id, args[1], keyWords, args[2], null, currentType);
 
 		this.repo_project.AddProject(project);
 

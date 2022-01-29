@@ -1,11 +1,17 @@
 class Project{
-    constructor(title, keyWords, cover, episodesNum, type)
+    constructor(id, title, keyWords, cover, episodesNum, type)
     {
+        this._id = id;
         this._title = title;
         this._keyWords = keyWords;
         this._cover = cover;
         this._episodesNum = episodesNum;
         this._type = type;
+    }
+
+    get id()
+    {
+        return this._id
     }
 
     get title()

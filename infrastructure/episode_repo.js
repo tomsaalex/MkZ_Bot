@@ -7,7 +7,7 @@ class RepoProjects{
 	#con;
 	constructor(host, user, password, database)
 	{
-		this.#projects = [];
+		this.#episodes = [];
 
 		this.#con = mysql.createConnection({
 			host: host,
