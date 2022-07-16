@@ -14,15 +14,19 @@ class ServiceProject {
 		PermissionValidator.ValidateUserPermissions(msg.member, "administrator");
 
 		let errorString = "";
-		if (args[1] == null)
-			errorString += "episod\n";
+		if (args[0] == null)
+			errorString += "Nume serie\n";
+		if(args[1] == null)
+			errorString += "Număr episod\n";
 
 		if(errorString.length > 0)
 		{
-			throw MissingArgumentError(errorString);
+			throw new MissingArgumentError(errorString);
 		}
 
 		let project = this.repo_project.GetProjectByKeyWord(args[0]);
+		
+		
 	}
 
 	AddCommand(msg, args) {
@@ -50,7 +54,7 @@ class ServiceProject {
 		while (args[i] != null) {
 			keyWords.push(args[i++].toLowerCase());
 		}
-		project_id = this.repo_project.GetNextID();
+		let project_id = this.repo_project.GetNextID();
 		let project = new Project(project_id, args[1], keyWords, args[2], null, currentType);
 
 		this.repo_project.AddProject(project);

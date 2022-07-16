@@ -1,6 +1,7 @@
 const fs = require('fs');
 const mysql = require('mysql')
 const RepositoryError = require('../exceptions/repository_error').RepositoryError
+const Project = require('../domain/entity_project').Project
 
 class RepoProjects{
 	#projects;
@@ -8,10 +9,11 @@ class RepoProjects{
 	constructor(host, user, password, database)
 	{
 		this.#projects = [];
-
-		this.#con = mysql.createConnection({
+		this.ReadAllFromFile();
+		console.log(this.#projects);
+			this.#con = mysql.createConnection({
 			host: host,
-			user: user,
+	    	user: user,
 			password: password,
 			database: database
 		});
@@ -49,41 +51,60 @@ class RepoProjects{
 
 	AddProject(project)
 	{
+		console.log(this.#projects);
+
 		for(let _proj of this.#projects)
 			if(_proj.title == project.title)
-				throw RepositoryError("exista deja o serie cu acelasi titlu.");
+				throw new RepositoryError("exista deja o serie cu acelasi titlu.");
 		
 		this.#projects.push(project);
+
+		this.AppendToFile();
 	}
 
 	GetAll()
 	{
 		this.ReadAllFromFile()
-		return this.projects;
+		return this.#projects;
 	}
 
 	ReadAllFromFile()
 	{
-		let text = fs.readFileSync(this.file_path,{encoding:'utf8'});
-		this.projects = JSON.parse(text);
+		let text = fs.readFileSync("anime2.json",{encoding:'utf8'});
+		if(text.length < 1)
+			return;
+
+		let tempProjects = JSON.parse(text);
+		let p;
+
+		for (let proj of tempProjects) {
+			let id =  proj["_id"];
+			let title = proj["_title"];
+			let keyWords = proj["_keyWords"];
+			let cover =  proj["_cover"];
+			let episodesNum = proj["_episodesNum"];
+			let type = proj["_type"];
+			p = new Project(id, title, keyWords, cover, episodesNum, type);
+			this.#projects.push(p);
+		}
 	}
 
 	AppendToFile()
 	{
-		fs.writeFileSync(this.file_path, JSON.stringify(onGoingSeries, null, 4));
+		fs.writeFileSync("anime2.json", JSON.stringify(this.#projects, null, 4));
 	}
 
 	GetProjectByKeyWord(keyWord)
-	{
-		for(var i = 0; i < this.projects.length; i++)
+	{console.log(this.#projects);
+		for(var i = 0; i < this.#projects.length; i++)
 		{
-			let _proj = this.projects[i];
+			let _proj = this.#projects[i];
 			for(var j = 0; j < _proj.keyWords.length; j ++)
 				if (keyWord == _proj.keyWords[j])
 					return _proj;
 		}
 
-		throw RepositoryError("Proiect inexistent!")
+		throw new RepositoryError("Proiect inexistent!");
 			
 	}
 
