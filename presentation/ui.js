@@ -24,6 +24,7 @@ class UI {
 		if (command == "start") {
 			try {
 				this.projectController.StartCommand(msg, args);
+				msg.react('✅');
 			} catch (error) {
 				if (error instanceof PermissionError)
 					msg.reply("nu ai permisiunile necesare pentru aceata comanda.");
@@ -35,8 +36,23 @@ class UI {
 			}
 		}
 		else if (command == "update") {
-			//Update command
-			msg.reply("Comanda este update");
+			try
+			{
+				this.projectController.UpdateCommand(msg, args);
+				msg.react('✅');
+			} catch(error)
+			{
+				if (error instanceof PermissionError)
+					msg.reply("nu ai permisiunile necesare pentru aceata comanda.");
+				else if (error instanceof RepositoryError)
+					msg.reply("seria nu exista.");			
+				else if (error instanceof MissingArgumentError) {
+					msg.reply("urmatoarele argumente lipsesc din comanda:\n" + error.message);
+				}
+				else if (error.message)
+					msg.reply(error.message);
+				msg.react('❌'); return;
+			}
 		}
 		else if (command == "progres") {
 			//Progres command
@@ -57,7 +73,8 @@ class UI {
 				else if (error instanceof MissingArgumentError) {
 					msg.reply("urmatoarele argumente lipsesc din comanda:\n" + error.message);
 				}
-				console.log(error);
+				else if (error.message)
+					msg.reply(error.message);
 				msg.react('❌'); return;
 			}
 		}
