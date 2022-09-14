@@ -1,5 +1,6 @@
 const ServiceProject = require('./controllers/service_project').ServiceProject;
 const RepoProjects = require('./infrastructure/project_repo').RepoProjects;
+const RepoEpisodes = require('./infrastructure/episode_repo').RepoEpisodes;
 const UI = require('./presentation/ui').UI;
 
 
@@ -27,7 +28,8 @@ var text, onGoingSeries;
 const prefix = '--';
 
 let repoProject = new RepoProjects("localhost", "root", "", "mkzbot");
-let projectController = new ServiceProject(repoProject);
+let repoEpisodes = new RepoEpisodes("localhost", "root", "", "mkzbot");
+let projectController = new ServiceProject(repoProject, repoEpisodes);
 let ui = new UI(projectController);
 
 

@@ -1,5 +1,6 @@
 const fs = require('fs');
-const mysql = require('mysql')
+const mysql = require('mysql');
+const { ProjectType } = require('../domain/entity_project_type');
 const RepositoryError = require('../exceptions/repository_error').RepositoryError
 const Project = require('../domain/entity_project').Project
 
@@ -83,7 +84,8 @@ class RepoProjects{
 			let keyWords = proj["_keyWords"];
 			let cover =  proj["_cover"];
 			let episodesNum = proj["_episodesNum"];
-			let type = proj["_type"];
+			let typeObject = proj["_type"];
+			let type = new ProjectType(typeObject.type);
 			p = new Project(id, title, keyWords, cover, episodesNum, type);
 			this.#projects.push(p);
 		}

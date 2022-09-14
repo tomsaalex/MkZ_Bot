@@ -10,6 +10,11 @@ class ProjectType{
         }
     }
 
+    static CheckEquality(type1, type2)
+    {
+        return type1.type == type2.type;
+    }
+
     static Anime = new ProjectType("anime");
     static Manga = new ProjectType("manga");
     static BD = new ProjectType("bd");

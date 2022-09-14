@@ -2,8 +2,8 @@ const fs = require('fs');
 const mysql = require('mysql')
 const RepositoryError = require('../exceptions/repository_error').RepositoryError
 
-class RepoProjects{
-	#projects;
+class RepoEpisodes{
+	#episodes;
 	#con;
 	constructor(host, user, password, database)
 	{
@@ -40,55 +40,42 @@ class RepoProjects{
 	GetNextID()
 	{
 		let maxID = 0;
-		for(let _proj of this.#projects)
-			if(_proj.id > maxID)
-				maxID = _proj.id;
+		for(let _ep of this.#episodes)
+			if(_ep.id > maxID)
+				maxID = _ep.id;
 		
 		return (maxID + 1);
 	}
 
-	AddProject(project)
+	AddEpisode(episode)
 	{
-		for(let _proj of this.#projects)
-			if(_proj.title == project.title)
-				throw RepositoryError("exista deja o serie cu acelasi titlu.");
+		for(let _ep of this.#episodes)
+			if(_ep.episodeNum == episode.episodeNum && _ep.projectID == episode.projectID)
+				throw new RepositoryError("episodul exista deja pentru aceasta serie.");
 		
-		this.#projects.push(project);
+		this.#episodes.push(episode);
 	}
 
 	GetAll()
 	{
-		this.ReadAllFromFile()
-		return this.projects;
+		return this.#episodes;
 	}
 
-	ReadAllFromFile()
-	{
-		let text = fs.readFileSync(this.file_path,{encoding:'utf8'});
-		this.projects = JSON.parse(text);
-	}
 
-	AppendToFile()
+	GetEpisode(projectID, episodeNum)
 	{
-		fs.writeFileSync(this.file_path, JSON.stringify(onGoingSeries, null, 4));
-	}
-
-	GetProjectByKeyWord(keyWord)
-	{
-		for(var i = 0; i < this.projects.length; i++)
+		for(var i = 0; i < this.#episodes.length; i++)
 		{
-			let _proj = this.projects[i];
-			for(var j = 0; j < _proj.keyWords.length; j ++)
-				if (keyWord == _proj.keyWords[j])
-					return _proj;
+			let _ep = this.#episodes[i];
+			if(_ep.showID == projectID && _ep.num == episodeNum)
+				return _ep;
 		}
 
-		throw RepositoryError("Proiect inexistent!")
-			
+		throw new RepositoryError("Episod inexistent.\n");
 	}
 
 }
 
 module.exports = {
-	RepoProjects
+	RepoEpisodes
 }

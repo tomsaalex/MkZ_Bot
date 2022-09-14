@@ -3,11 +3,15 @@ const { PermissionError } = require('../exceptions/permission_error');
 const { ProjectType } = require('../domain/entity_project_type');
 const { MissingArgumentError } = require('../exceptions/missing_argument_error');
 const { Project } = require('../domain/entity_project');
+const { Episode } = require('../domain/entity_episode');
 const { JobManager } = require('../validators/job_validator');
+const { RepositoryError } = require('../exceptions/repository_error');
+
 
 class ServiceProject {
-	constructor(repo_project) {
+	constructor(repo_project, repo_episodes) {
 		this.repo_project = repo_project;
+		this.repo_episodes = repo_episodes;
 	}
 
 	StartCommand(msg, args) {
@@ -49,10 +53,29 @@ class ServiceProject {
 		let job = JobManager.IdentifyJob(args[2]);
 		PermissionValidator.ValidateUserPermissions(msg.member, job);
 		
+		let project = this.repo_project.GetProjectByKeyWord(args[0]);
+		let episodeNum = Number(args[1]);
+		let enableProperty = (args[3] == "-not" ? false : true);
 
-
+		let episodeToChange;
+		try
+		{	
+		 	episodeToChange = this.repo_episodes.GetEpisode(project.id, episodeNum);
+		}
+		catch (error)
+		{
+			if(error instanceof RepositoryError)
+				{
+					episodeToChange = new Episode(project.id, episodeNum);
+					this.repo_episodes.AddEpisode(episodeToChange);
+				}
+		}
 		
-
+		if(JobManager.CheckJobCompatibility(job, project))
+		{
+			episodeToChange.SetState(job, enableProperty);
+		}
+		console.log(episodeToChange);
 	}
 
 	AddCommand(msg, args) {

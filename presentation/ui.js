@@ -43,9 +43,14 @@ class UI {
 			} catch(error)
 			{
 				if (error instanceof PermissionError)
-					msg.reply("nu ai permisiunile necesare pentru aceata comanda.");
+					msg.reply("nu ai permisiunile necesare pentru aceasta comanda.");
 				else if (error instanceof RepositoryError)
-					msg.reply("seria nu exista.");			
+				{
+					if(error.message.includes("Episod"))
+						msg.reply("episodul nu exista.");
+					else if(error.message.includes("Proiect"))
+						msg.reply("seria nu exista.");			
+				}
 				else if (error instanceof MissingArgumentError) {
 					msg.reply("urmatoarele argumente lipsesc din comanda:\n" + error.message);
 				}
