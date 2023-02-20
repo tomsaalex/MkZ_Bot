@@ -1,5 +1,5 @@
 const { JobTypeError } = require("../exceptions/job_type_error")
-const ProjectType = require('../domain/entity_project_type.js').ProjectType
+const ProjectType = require('../domain/ProjectType.js').ProjectType
 
 class Job{
     constructor(name)

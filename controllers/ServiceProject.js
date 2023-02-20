@@ -1,11 +1,11 @@
 const { PermissionValidator } = require('../validators/permission_validator');
 const { PermissionError } = require('../exceptions/permission_error');
-const { ProjectType } = require('../domain/entity_project_type');
 const { MissingArgumentError } = require('../exceptions/missing_argument_error');
-const { Project } = require('../domain/entity_project');
-const { Episode } = require('../domain/entity_episode');
+const { Project } = require('../domain/project');
+const { Episode } = require('../domain/episode');
 const { JobManager } = require('../validators/job_validator');
 const { RepositoryError } = require('../exceptions/repository_error');
+const {ProjectType} = require('../domain/ProjectType');
 
 
 class ServiceProject {
@@ -78,37 +78,46 @@ class ServiceProject {
 		console.log(episodeToChange);
 	}
 
-	AddCommand(msg, args) {
-		//--add [tip serie: anime/manga/BD][nume serie] [URL pentru thumbnail-ul seriei] [lista de cuvinte cheie a seriei] (adaugă o serie nouă pe baza parametrilor)
+	async AddCommand(msg, args) {
+		//--add [tip serie: anime/manga/BD][nume serie][numar episoade][URL pentru thumbnail-ul seriei] [lista de cuvinte cheie a seriei] (adaugă o serie nouă pe baza parametrilor)
 		PermissionValidator.ValidateUserPermissions(msg.member, JobManager.Administrator);
-
-		let currentType = new ProjectType(args[0]);
 		
-		let errorString = "";
+		const ARG_INDEX_PROJECT_TYPE = 0;
+		const ARG_INDEX_TITLE = 1;
+		const ARG_INDEX_EPISODES_NUM = 2;
+		const ARG_INDEX_COVER = 3;
+		const ARG_INDEX_START_KEYWORDS = 4;
 
-		if (args[1] == null)
+		let errorString = "";
+		
+		if(args[ARG_INDEX_PROJECT_TYPE] == null)
+			errorString += "tipul proiectului\n";
+		if (args[ARG_INDEX_TITLE] == null)
 			errorString += "titlu\n";
-		if (args[2] == null)
+		if(args[ARG_INDEX_EPISODES_NUM] == null)
+			errorString += "nr. episoade";
+		if (args[ARG_INDEX_COVER] == null)
 			errorString += "cover\n";
-		if (args[3] == null)
+		if (args[ARG_INDEX_START_KEYWORDS] == null)
 			errorString += "keyWord\n";
 		if (errorString.length > 0)
 			throw new MissingArgumentError(errorString);
+		
+		args[ARG_INDEX_PROJECT_TYPE] = args[ARG_INDEX_PROJECT_TYPE].toLowerCase();
+		let currentType = new ProjectType(args[ARG_INDEX_PROJECT_TYPE]);
+		
+		args[ARG_INDEX_TITLE] = args[ARG_INDEX_TITLE].replace(/---/g, " ");
 
-		args[1] = args[1].replace(/---/g, " ");
-
-		//I need to move this out of here, but I'm not yet sure where
 		let keyWords = new Array();
-		let i = 3;
+		let i = ARG_INDEX_START_KEYWORDS;
 		while (args[i] != null) {
 			keyWords.push(args[i++].toLowerCase());
 		}
-		let project_id = this.repo_project.GetNextID();
-		let project = new Project(project_id, args[1], keyWords, args[2], null, currentType);
+		let project = new Project(args[ARG_INDEX_TITLE], keyWords, args[ARG_INDEX_COVER], args[ARG_INDEX_EPISODES_NUM], currentType);
 
-		this.repo_project.AddProject(project);
+		await this.repo_project.AddProject(project);
 
-		return args[1];
+		return args[ARG_INDEX_TITLE];
 	}
 }
 

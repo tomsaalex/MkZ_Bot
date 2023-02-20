@@ -3,6 +3,7 @@ const { RepositoryError } = require("../exceptions/repository_error");
 const { ProjectTypeError } = require("../exceptions/project_type_error");
 const { MissingArgumentError } = require("../exceptions/missing_argument_error");
 const { MessageFlags } = require("discord.js");
+const { SqlError } = require("mariadb");
 
 class UI {
 	constructor(projectController, client) {
@@ -17,7 +18,7 @@ class UI {
 		return true;
 	}
 
-	ProcessCommand(msg, prefix) {
+	async ProcessCommand(msg, prefix) {
 		const args = msg.content.slice(prefix.length).trim().split(' ');
 		const command = args.shift().toLowerCase();
 
@@ -65,7 +66,7 @@ class UI {
 		}
 		else if (command == "add") {
 			try {
-				let title = this.projectController.AddCommand(msg, args);
+				let title = await this.projectController.AddCommand(msg, args);
 				msg.reply("seria " + title + " a fost adaugata cu succes!");
 				msg.react('✅');
 			} catch (error) {
@@ -78,8 +79,9 @@ class UI {
 				else if (error instanceof MissingArgumentError) {
 					msg.reply("urmatoarele argumente lipsesc din comanda:\n" + error.message);
 				}
-				else if (error.message)
+				else if (error.message){
 					msg.reply(error.message);
+				}
 				msg.react('❌'); return;
 			}
 		}

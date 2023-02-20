@@ -1,11 +1,11 @@
-const ServiceProject = require('./controllers/service_project').ServiceProject;
-const RepoProjects = require('./infrastructure/project_repo').RepoProjects;
-const RepoEpisodes = require('./infrastructure/episode_repo').RepoEpisodes;
+const ServiceProject = require('./controllers/ServiceProject').ServiceProject;
+const RepoProjects = require('./infrastructure/DBProjectsRepo').RepoProjects;
+const RepoEpisodes = require('./infrastructure/DBEpisodesRepo').RepoEpisodes;
 const UI = require('./presentation/ui').UI;
 
 
-const Discord = require('discord.js');
-const client = new Discord.Client();
+const { Client, GatewayIntentBits } = require('discord.js');
+const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.DirectMessages, GatewayIntentBits.MessageContent, GatewayIntentBits.GuildMembers] });
 const fs = require('fs');
 const { token } = require("./connection_data/token.json");
 
@@ -27,12 +27,14 @@ client.login(token);
 var text, onGoingSeries;
 const prefix = '--';
 
-let repoProject = new RepoProjects("localhost", "root", "", "mkzbot");
-let repoEpisodes = new RepoEpisodes("localhost", "root", "", "mkzbot");
+let repoProject = new RepoProjects("localhost", "root", "", "mkz_bot");
+let repoEpisodes = new RepoEpisodes("localhost", "root", "", "mkz_bot");
 let projectController = new ServiceProject(repoProject, repoEpisodes);
 let ui = new UI(projectController);
 
-
+/**
+ * Runs when the bot is ready to start.
+ */
 client.on('ready', () => {
 	mainChannel = client.guilds.cache.get(testServerID).channels.resolve(testChannelID);
 	//sinodChannel = client.guilds.cache.get(sinodServerID).channels.resolve(sinodChannelID);
@@ -44,8 +46,10 @@ client.on('ready', () => {
 	//sinodChannel.send("Ad astra abyssoque. Welcome to the MkZ Family.");
 });
 
-client.on('message', msg => {
-
+/**
+ * Runs for every message sent on the servers this instance of the bot runs on.
+ */
+client.on('messageCreate', msg => {
 	if (!ui.IsValidCommand(msg, prefix))
 		return;
 
