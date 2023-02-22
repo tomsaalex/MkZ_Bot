@@ -37,7 +37,7 @@ class UI {
 			}
 		}
 		else if (command == "update") {
-			try
+			/*try
 			{
 				this.projectController.UpdateCommand(msg, args);
 				msg.react('✅');
@@ -58,7 +58,8 @@ class UI {
 				else if (error.message)
 					msg.reply(error.message);
 				msg.react('❌'); return;
-			}
+			}*/
+			;
 		}
 		else if (command == "progres") {
 			//Progres command
@@ -86,12 +87,44 @@ class UI {
 			}
 		}
 		else if (command == "drop") {
-			//Drop command
-			msg.reply("Comanda este drop");
+			try {
+				let title_keyword = await this.projectController.DropCommand(msg, args);
+				msg.reply("seria " + title_keyword[1] + " cu cuvantul cheie " + title_keyword[0] + " a fost inlaturata cu succes!");
+				msg.react('✅');
+			}
+			catch(error)
+			{
+				if (error instanceof PermissionError) {
+					msg.reply("nu ai permisiunile necesare pentru aceata comanda.");
+				}
+				else if (error instanceof MissingArgumentError) {
+					msg.reply("urmatoarele argumente lipsesc din comanda:\n" + error.message);
+				}
+				else if (error.message){
+					msg.reply(error.message);
+				}
+				msg.react('❌'); return;
+			}
 		}
 		else if (command == "edit") {
-			//Edit command
-			msg.reply("Comanda este edit");
+			try {
+				let title = await this.projectController.EditCommand(msg, args);
+				msg.reply("valoarea " + + " a seriei " + + " a fost actualizata.");
+				msg.react('✅');
+			}
+			catch(error)
+			{
+				if (error instanceof PermissionError) {
+					msg.reply("nu ai permisiunile necesare pentru aceata comanda.");
+				}
+				else if (error instanceof MissingArgumentError) {
+					msg.reply("urmatoarele argumente lipsesc din comanda:\n" + error.message);
+				}
+				else if (error.message){
+					msg.reply(error.message);
+				}
+				msg.react('❌'); return;
+			}
 		}
 		else if (command == "help") {
 			//Help command

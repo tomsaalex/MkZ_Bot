@@ -21,7 +21,13 @@ class DBRepoProjects{
 		});
 	}
 
-
+	/**
+	 * Adds the given project to the repository.
+	 * @async
+	 * @param {Project} project The project to be added to the repository.
+	 * @throws {RepositoryError} If a project exists in the repository that has the same title or at least one key word identical with `project`.
+	 * @throws {SqlError} If an unexpected error happens due to the database.
+	*/
 	async AddProject(project)
 	{
 		const addProjectPreparedStatement = await this.#con.prepare("INSERT INTO translation_shows(title, type, episodes_num, cover) VALUES(?, ?, ?, ?)");
@@ -68,6 +74,23 @@ class DBRepoProjects{
 		}
 			
 		await addProjectPreparedStatement.close();
+	}
+
+	async DropProject(projectKeyWord)
+	{
+		let keyWordDBEntryQuery = await this.#con.query('SELECT show_id FROM translation_shows_keywords WHERE key_word = ?', [projectKeyWord]);
+		if(keyWordDBEntryQuery.length < 1)
+		{
+			throw new RepositoryError("There is no project identifiable with the key word " + projectKeyWord);
+		}
+		let projectToDropID = keyWordDBEntryQuery[0].show_id;
+		
+		let titleDBEntry = await this.#con.query('SELECT title FROM translation_shows WHERE id = ?', [projectToDropID]);
+
+		let dropProjectPreparedStatement = await this.#con.prepare('DELETE FROM translation_shows WHERE id = ?');
+		dropProjectPreparedStatement.execute([projectToDropID]);
+
+		return titleDBEntry[0].title;
 	}
 
 	async GetAll()

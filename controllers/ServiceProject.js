@@ -78,9 +78,20 @@ class ServiceProject {
 		console.log(episodeToChange);
 	}
 
-	async AddCommand(msg, args) {
+	/**
+	 * Handles the general task of adding a project to the repository of projects.
+	 * @async
+	 * @param {Message} message The message that triggered the addition operation.
+	 * @param {string[]} args The arguments passed to the command. In order: the project type, the project's title, the project's number of episodes, the project's cover art, the project's list of identifying key words.
+	 * @throws {RepositoryError} If a project exists in the repository that has the same title or at least one key word identical with `project`.
+	 * @throws {SqlError} If an unexpected error happens due to the database.
+	 * @throws {MissingArgumentError} If one of the expected arguments from args is missing.
+	 * @throws {PermissionError} If the user doesn't have sufficient permissions to add a new project.
+	 * @returns The title of the project added to the repository.
+	 */
+	async AddCommand(message, args) {
 		//--add [tip serie: anime/manga/BD][nume serie][numar episoade][URL pentru thumbnail-ul seriei] [lista de cuvinte cheie a seriei] (adaugă o serie nouă pe baza parametrilor)
-		PermissionValidator.ValidateUserPermissions(msg.member, JobManager.Administrator);
+		PermissionValidator.ValidateUserPermissions(message.member, JobManager.Administrator);
 		
 		const ARG_INDEX_PROJECT_TYPE = 0;
 		const ARG_INDEX_TITLE = 1;
@@ -118,6 +129,39 @@ class ServiceProject {
 		await this.repo_project.AddProject(project);
 
 		return args[ARG_INDEX_TITLE];
+	}
+
+	/**
+	 * Handles the general task of removing a project from the repository of projects.
+	 * @async
+	 * @param {Message} message The message that triggered the addition operation.
+	 * @param {string[]} args The arguments passed to the command. In order: key word to identify the project.
+	 * @throws {RepositoryError} If no project exists in the repository that can be identified with the given key word.
+	 * @throws {SqlError} If an unexpected error happens due to the database.
+	 * @throws {MissingArgumentError} If one of the expected arguments from args is missing.
+	 * @returns A list of 2 elements containing the key word used to identify a project, and the title of the project dropped.
+	 */
+	async DropCommand(message, args)
+	{
+		//--drop [cuvant cheie pentru serie] (înlatură o serie din lista bot-ului)
+		PermissionValidator.ValidateUserPermissions(message.member, JobManager.Administrator);
+		let errorString = "";
+		if(args[0] == null)
+			errorString += "key word";
+		if(errorString.length > 0)
+			throw new MissingArgumentError(errorString);
+
+		let title = await this.repo_project.DropProject(args[0]);
+		return [args[0], title];
+	}
+
+	async EditCommand(mesage, args)
+	{
+		//--edit [nume serie] [proprietatea care trebuie editată] [noua valoare a proprietății] (editează una dintre proprietățile unei serii)
+	
+		PermissionValidator.ValidateUserPermissions(message.member, JobManager.Administrator);
+		
+
 	}
 }
 
