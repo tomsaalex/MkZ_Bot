@@ -76,6 +76,13 @@ class DBRepoProjects{
 		await addProjectPreparedStatement.close();
 	}
 
+	/**
+	 * Removes the project identified by the given key word from the repository.
+	 * @async
+	 * @param {string} projectKeyWord The key word that can identify the project to be dropped.
+	 * @throws {RepositoryError} If no project exists in the repository that can be identified with the given key word.
+	 * @throws {SqlError} If an unexpected error happens due to the database.
+	*/
 	async DropProject(projectKeyWord)
 	{
 		let keyWordDBEntryQuery = await this.#con.query('SELECT show_id FROM translation_shows_keywords WHERE key_word = ?', [projectKeyWord]);
@@ -91,6 +98,60 @@ class DBRepoProjects{
 		dropProjectPreparedStatement.execute([projectToDropID]);
 
 		return titleDBEntry[0].title;
+	}
+
+	/**
+	 * Edits one field of the project identified by `keyWord` from the repository.
+	 * @async
+	 * @param {string} keyWord The key word that can identify the project to be edited.
+	 * @param {string} propertyName The name of the field of the project to be edited.
+	 * @param {*} newPropertyValue The new value to be attributed to `propertyName`.
+	 * @throws {RepositoryError} If there is no project in the repository that can be identified by `keyWord`.
+	 * @throws {TypeError} If a field of the project requires a value of a different type than `newPropertyValue`.
+	 * @throws {SqlError} If an unexpected error happens due to the database.
+	*/
+	async EditProject(keyWord, propertyName, newPropertyValue)
+	{
+		let projectToUpdateDBEntryQuery = await this.#con.query(
+			`SELECT id, title 
+			FROM translation_shows_keywords TSK 
+			INNER JOIN translation_shows TS ON TS.id = TSK.show_id 
+			WHERE TSK.key_word = ?`, [keyWord]);
+		
+		if(projectToUpdateDBEntryQuery.length < 1)
+		{
+			throw new RepositoryError("There is no project identifiable with the key word " + keyWord);
+		}	
+
+		let projectTitle = projectToUpdateDBEntryQuery[0].title;
+		let projectId = projectToUpdateDBEntryQuery[0].id;
+
+		switch(propertyName)
+		{
+			case 'title': 
+				let alterTitlePreparedStatement = await this.#con.prepare('UPDATE translation_shows SET title = ? WHERE id = ?');
+				await alterTitlePreparedStatement.execute([newPropertyValue, projectId]);
+				await alterTitlePreparedStatement.close();
+			break;
+
+			case 'cover':
+				let alterCoverPreparedStatement = await this.#con.prepare('UPDATE translation_shows SET cover = ? WHERE id = ?');
+				await alterCoverPreparedStatement.execute([newPropertyValue, projectId]);
+				await alterCoverPreparedStatement.close();
+			break;
+
+			case 'episodes_num':
+				if(typeof(newPropertyValue) != 'number')
+					throw new TypeError("Noua valoare a atributului " + propertyName + " trebuie sa fie un numar");
+				let alterEpisodesNumPreparedStatement = await this.#con.prepare('UPDATE translation_shows SET episodes_num = ? WHERE id = ?');
+				await alterEpisodesNumPreparedStatement.execute([newPropertyValue, projectId]);
+				await alterEpisodesNumPreparedStatement.close();
+			break;
+
+			default: throw new RepositoryError(propertyName + " nu este o proprietate valida ce poate fi modificata.\n");
+		}
+
+		return projectTitle;
 	}
 
 	async GetAll()

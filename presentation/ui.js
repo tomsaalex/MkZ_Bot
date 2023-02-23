@@ -109,7 +109,7 @@ class UI {
 		else if (command == "edit") {
 			try {
 				let title = await this.projectController.EditCommand(msg, args);
-				msg.reply("valoarea " + + " a seriei " + + " a fost actualizata.");
+				msg.reply("valoarea " + args[1] + " a seriei " + title + " a fost modificata in " + args[2]);
 				msg.react('✅');
 			}
 			catch(error)

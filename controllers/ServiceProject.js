@@ -155,13 +155,34 @@ class ServiceProject {
 		return [args[0], title];
 	}
 
-	async EditCommand(mesage, args)
+	/**
+	 * Handles the general task of editing a project from the repository.
+	 * @async
+	 * @param {Message} message The message that triggered the addition operation.
+	 * @param {string[]} args The arguments passed to the command. In order: key word to identify the project, the name of the field that needs to be he edited, the new value of the field to be edited.
+	 * @throws {RepositoryError} If there is not project in the repository that can be identified by the given key word.
+	 * @throws {TypeError} If a field of the project requires a value of a different type than `newPropertyValue`.
+	 * @throws {SqlError} If an unexpected error happens due to the database.
+	*/
+	async EditCommand(message, args)
 	{
-		//--edit [nume serie] [proprietatea care trebuie editată] [noua valoare a proprietății] (editează una dintre proprietățile unei serii)
+		//--edit [key word pentru identificare] [proprietatea care trebuie editată] [noua valoare a proprietății] (editează una dintre proprietățile unei serii)
 	
 		PermissionValidator.ValidateUserPermissions(message.member, JobManager.Administrator);
 		
-
+		let errorString = "";
+		if(args[0] == null)
+			errorString += "key word pentru identificare\n";
+		if(args[1] == null)
+			errorString += "proprietatea ce trebuie modificata\n";
+		if(args[2] == null)
+			errorString += "noua valoare a proprietatii ce trebuie modificata\n";
+		
+		if(errorString.length > 0)
+			throw new MissingArgumentError(errorString);
+		
+		let originalTitle = await this.repo_project.EditProject(args[0], args[1], args[2]);
+		return originalTitle;
 	}
 }
 
